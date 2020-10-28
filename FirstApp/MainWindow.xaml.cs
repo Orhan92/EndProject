@@ -124,14 +124,6 @@ namespace FirstApp
             Grid.SetRow(addToChart, 2);
             Grid.SetColumn(addToChart, 0);
 
-            info = new Button //När användaren klickar här så ska produktbeskrivning visas i kolumn 1 (mitten kolumnen)
-            {
-                Content = "Visa info",
-                Width = 100,
-                Margin = new Thickness(0, 2, 0, 0)
-            };
-            addToChart.Children.Add(info);
-
             addItem = new Button //Denna knapp ska lägga till den markerade artikeln i varukorgen
             {
                 Content = "Lägg till",
@@ -139,6 +131,14 @@ namespace FirstApp
                 Margin = new Thickness(0, 2, 0, 0)
             };
             addToChart.Children.Add(addItem);
+
+            info = new Button //När användaren klickar här så ska produktbeskrivning visas i kolumn 1 (mitten kolumnen)
+            {
+                Content = "Visa info",
+                Width = 100,
+                Margin = new Thickness(0, 2, 0, 0)
+            };
+            addToChart.Children.Add(info);        
 
             //LISTA FÖR VARUKORGEN***************************************************************************************************
 
