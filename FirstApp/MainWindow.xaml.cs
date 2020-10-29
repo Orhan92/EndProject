@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,22 +17,30 @@ using System.Windows.Shapes;
 
 namespace FirstApp
 {
+    public class Product
+    {
+        public string Title;
+        public string Descprition;
+        public decimal Price;
+        public string Image;
+        public Product(string title, string description, decimal price, string pictures)
+        {
+            Title = title;
+            Descprition = description;
+            Price = price;
+            Image = pictures;
+        }
+    }
     public partial class MainWindow : Window
     {
-        private ListBox productListBox;
-        private ListBox ChartList;
+        private Image image;
+        private Grid grid;
+        private ListBox productListBox, ChartList;
         private TextBox discountBox;
-        private TextBlock chart;
-        private TextBlock productDescritpion;
-        private TextBlock productList;
-        private Button addDiscount;
-        private Button order;
-        private Button empty;
-        private Button save;
-        private Button remove;
-        private Button addItem;
-        private Button info;
-        
+        private TextBlock chart, productDescritpion, productList, descriptionBox;
+        private Button addDiscount, order, empty, save, remove, addItem, info;
+        private List<Product> listProducts;
+        private StackPanel DescBox;
         public MainWindow()
         {
             InitializeComponent();
@@ -38,6 +48,9 @@ namespace FirstApp
         }
         private void Start()
         {
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+
+            listProducts = new List<Product>();
             // Window options
             Title = "Butik";
             Width = 730;
@@ -50,7 +63,7 @@ namespace FirstApp
             Content = root;
 
             // Main grid
-            Grid grid = new Grid();
+            grid = new Grid();
             root.Content = grid;
             grid.Margin = new Thickness(5);
 
@@ -62,13 +75,16 @@ namespace FirstApp
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             //I main griden har vi skapat 3 kolumner
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); 
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(300) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
             grid.Visibility = Visibility.Visible;
 
             // FÖRSTA KOLUMNEN I GRIDDEN*****************************************************************
+            //var y = CreateImage(@"C:\Users\orhan\source\repos\Lektion18GUIhändelser\FirstApp\bin\Debug\netcoreapp3.1\Images\blandfärs.jpg");
+            //grid.Children.Add(y);
+
             productList = new TextBlock //Detta är titeln som står högst upp "Produktlista"
             {
                 FontSize = 20,
@@ -80,6 +96,40 @@ namespace FirstApp
             grid.Children.Add(productList);
             Grid.SetColumn(productList, 0);
             Grid.SetRow(productList, 0);
+
+            productListBox = new ListBox //I den här ListBoxen ska vi visa användaren en lista på valbara produkter från en csv fil.
+            {
+                Margin = new Thickness(0, 2, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Width = 200,
+                Height = 350
+            };
+            grid.Children.Add(productListBox);
+            Grid.SetColumn(productListBox, 0);
+            Grid.SetRow(productListBox, 1);
+
+            //Lääser in från produktLista.csv
+            string[] produktLista = File.ReadAllLines(@"C:\Users\orhan\source\repos\Lektion18GUIhändelser\FirstApp\produktLista.csv");
+
+            //Separerar alla ',' och lägger in de i diverse titel här nedan.
+            foreach (string line in produktLista)
+            {
+                string[] columns = line.Split(',');
+                string titleName = columns[0];
+                string descriptionProduct = columns[1];
+                decimal productPrice = decimal.Parse(columns[2]);
+                string pictures = columns[3];
+
+                //För varje rad i csv filen skapar vi ett nytt objekt (x) av klassen.
+                Product x = new Product(titleName, descriptionProduct, productPrice, pictures);
+                //Lägger till objektet i en lista (titelnamn, beskrivning och pris)
+                listProducts.Add(x);
+            }
+            //Här säger vi att för varje objekt (x) i klassen Product, skriv ut x.Title och x.Price i productListBox.
+            foreach (Product x in listProducts)
+            {
+                productListBox.Items.Add(x.Title + " (" + x.Price + ")kr");
+            }
 
             //KOLUMN 2 PRODUKTBESKRIVNING************************************************************************
             productDescritpion = new TextBlock //Detta är titeln som står högst upp "Produktbeskrivning"
@@ -94,6 +144,63 @@ namespace FirstApp
             Grid.SetColumn(productDescritpion, 1);
             Grid.SetRow(productDescritpion, 0);
 
+            DescBox = new StackPanel { Orientation = Orientation.Vertical };
+            grid.Children.Add(DescBox);
+            Grid.SetColumn(DescBox, 1);
+            Grid.SetRow(DescBox, 1);
+
+            //string[] imagePaths = { "blandfärs.jpg", "citronmaräng.jpg", "filmjölk.jpg", "lättmjölk.jpg", "mellanmjölk.jpg", "nötfärs.jpg", "ost.jpg", "oxfilé.jpg", "standardmjölk.jpg", "vispgrädde.jpg" };
+            //foreach (string path in imagePaths)
+            //{
+            //    // For each file path, create an image using the various classes below and add it to the wrap panel.
+            //    // If we have to do this in many places, we would preferably create a custom method for doing it easily, as in the kitchen sink example.
+            //    ImageSource source = new BitmapImage(new Uri(path, UriKind.Relative));
+            //    Image image = new Image
+            //    {
+            //        Source = source,
+            //        Width = 10,
+            //        Height = 10,
+            //        Stretch = Stretch.UniformToFill,
+            //        HorizontalAlignment = HorizontalAlignment.Center,
+            //        VerticalAlignment = VerticalAlignment.Center,
+            //        Margin = new Thickness(5)
+            //    };
+            //    RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+            //    DescBox.Children.Add(image);
+            //}
+
+            image = CreateImage(@"Images\blandfärs.jpg");
+
+            //private Image CreateImage(string filePath)
+            //{
+            //    ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Absolute));
+            //    image = new Image
+            //    {
+            //        Source = source,
+            //        Width = 100,
+            //        Height = 100,
+            //        Stretch = Stretch.UniformToFill,
+            //        HorizontalAlignment = HorizontalAlignment.Center,
+            //        VerticalAlignment = VerticalAlignment.Center,
+            //        Margin = new Thickness(2)
+            //    };
+            //    DescBox.Children.Add(image);
+            //    // A small rendering tweak to ensure maximum visual appeal.
+            //    RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+            //    return image;
+            //}
+
+            descriptionBox = new TextBlock //I den här ListBoxen ska vi visa användaren en lista på valbara produkter från en csv fil.
+            {
+                Margin = new Thickness(0, 2, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Width = 200,
+                //Height = 350,
+                TextWrapping = TextWrapping.Wrap,
+                Text = string.Empty
+            };
+            DescBox.Children.Add(descriptionBox);
+
             //VARUKORGEN Texten högst upp ************************************************************************
             chart = new TextBlock //Detta är titeln som står högst upp "Varukorgen"
             {
@@ -106,17 +213,6 @@ namespace FirstApp
             grid.Children.Add(chart);
             Grid.SetColumn(chart, 2);
             Grid.SetRow(chart, 0);
-
-            productListBox = new ListBox //I den här ListBoxen ska vi visa användaren en lista på valbara produkter från en csv fil.
-            {
-                Margin = new Thickness(0, 2, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Width = 200,
-                Height = 350
-            };
-            grid.Children.Add(productListBox);
-            Grid.SetColumn(productListBox, 0);
-            Grid.SetRow(productListBox, 1);
 
             //STACK PANEL FÖR KNAPPARNA I PRODUKTLISTAN*****************************************************************************
             StackPanel addToChart = new StackPanel { Orientation = Orientation.Horizontal }; //Denna StackPanel är skapad för info och lägg till knapparna.
@@ -138,9 +234,10 @@ namespace FirstApp
                 Width = 100,
                 Margin = new Thickness(0, 2, 0, 0)
             };
-            addToChart.Children.Add(info);        
+            addToChart.Children.Add(info);
+            info.Click += ClickedInfo;
 
-            //LISTA FÖR VARUKORGEN***************************************************************************************************
+            //LISTA FÖR VARUKORGEN**************************************************************************************************
 
             ChartList = new ListBox //Listbox som ska visa upp de tillagda artiklarna i varukorgen.
             {
@@ -177,7 +274,6 @@ namespace FirstApp
             };
             discount.Children.Add(discountBox);
             discountBox.GotFocus += HasBeenClicked; //Skapar en metod för vad som ska hända när användaren klickar i rabatt rutan.
-
 
             //KNAPPAR INUTI STACKPANELEN FÖR VARUKORGEN*******************************************************************************
             StackPanel buttonChart = new StackPanel { Orientation = Orientation.Horizontal }; // skapad för att lägga till knapparna under varukorgen
@@ -223,19 +319,53 @@ namespace FirstApp
             secondButtonChart.Children.Add(order);
             //***********************************************************************************************
         }
+        private void ClickedInfo(object sender, RoutedEventArgs e)
+        {
+            int selectedIndex = productListBox.SelectedIndex;
+            //= listProducts[selectedIndex].Image;
+            descriptionBox.Text = listProducts[selectedIndex].Descprition;     
+        }
+
         private void HasBeenClicked(object sender, RoutedEventArgs e) //Denna metod gör så att boxen blir tömd när man klickar på den.
         {
             bool hasBeenClicked = false;
-            
             if (!hasBeenClicked)
             {
                 discountBox = sender as TextBox;
                 discountBox.Foreground = Brushes.Black;
                 discountBox.Background = Brushes.White;
                 discountBox.Text = String.Empty;
-                hasBeenClicked = true;             
+                hasBeenClicked = true;
             }
         }
-
+        //private Button button(string content, HorizontalAlignment alignment, int margin) //adds for grid
+        //{
+        //    Button x = new Button
+        //    {
+        //        Content = content,
+        //        HorizontalAlignment = alignment,
+        //        Margin = new Thickness(margin),
+        //        Width = 200
+        //    };
+        //    return x;
+        //}
+        private Image CreateImage(string filePath)
+        {
+            ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
+            image = new Image
+            {
+                Source = source,
+                Width = 100,
+                //Height = 100,
+                Stretch = Stretch.UniformToFill,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 2, 0, 0)
+            };
+            //DescBox.Children.Add(image);
+            // A small rendering tweak to ensure maximum visual appeal.
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+            return image;
+        }
     }
 }
