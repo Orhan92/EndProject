@@ -40,6 +40,7 @@ namespace FirstApp
         private TextBlock chart, productDescritpion, productList, descriptionBox;
         private Button addDiscount, order, empty, save, remove, addItem, info;
         private List<Product> listProducts;
+        private List<string> discountList;
         private StackPanel DescBox;
         public MainWindow()
         {
@@ -50,7 +51,9 @@ namespace FirstApp
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
-            listProducts = new List<Product>();
+            listProducts = new List<Product>(); //lägger in samtliga objekt ur csv filen hit.
+            discountList = new List<string>(); //lägger in samtliga rabattkoder här.
+
             // Window options
             Title = "Butik";
             Width = 730;
@@ -81,9 +84,8 @@ namespace FirstApp
 
             grid.Visibility = Visibility.Visible;
 
+
             // FÖRSTA KOLUMNEN I GRIDDEN*****************************************************************
-            //var y = CreateImage(@"C:\Users\orhan\source\repos\Lektion18GUIhändelser\FirstApp\bin\Debug\netcoreapp3.1\Images\blandfärs.jpg");
-            //grid.Children.Add(y);
 
             productList = new TextBlock //Detta är titeln som står högst upp "Produktlista"
             {
@@ -99,6 +101,7 @@ namespace FirstApp
 
             productListBox = new ListBox //I den här ListBoxen ska vi visa användaren en lista på valbara produkter från en csv fil.
             {
+                Background = Brushes.AliceBlue,
                 Margin = new Thickness(0, 2, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Width = 200,
@@ -149,49 +152,11 @@ namespace FirstApp
             Grid.SetColumn(DescBox, 1);
             Grid.SetRow(DescBox, 1);
 
-            //string[] imagePaths = { "blandfärs.jpg", "citronmaräng.jpg", "filmjölk.jpg", "lättmjölk.jpg", "mellanmjölk.jpg", "nötfärs.jpg", "ost.jpg", "oxfilé.jpg", "standardmjölk.jpg", "vispgrädde.jpg" };
-            //foreach (string path in imagePaths)
-            //{
-            //    // For each file path, create an image using the various classes below and add it to the wrap panel.
-            //    // If we have to do this in many places, we would preferably create a custom method for doing it easily, as in the kitchen sink example.
-            //    ImageSource source = new BitmapImage(new Uri(path, UriKind.Relative));
-            //    Image image = new Image
-            //    {
-            //        Source = source,
-            //        Width = 10,
-            //        Height = 10,
-            //        Stretch = Stretch.UniformToFill,
-            //        HorizontalAlignment = HorizontalAlignment.Center,
-            //        VerticalAlignment = VerticalAlignment.Center,
-            //        Margin = new Thickness(5)
-            //    };
-            //    RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
-            //    DescBox.Children.Add(image);
-            //}
-
-            image = CreateImage(@"Images\blandfärs.jpg");
-
-            //private Image CreateImage(string filePath)
-            //{
-            //    ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Absolute));
-            //    image = new Image
-            //    {
-            //        Source = source,
-            //        Width = 100,
-            //        Height = 100,
-            //        Stretch = Stretch.UniformToFill,
-            //        HorizontalAlignment = HorizontalAlignment.Center,
-            //        VerticalAlignment = VerticalAlignment.Center,
-            //        Margin = new Thickness(2)
-            //    };
-            //    DescBox.Children.Add(image);
-            //    // A small rendering tweak to ensure maximum visual appeal.
-            //    RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
-            //    return image;
-            //}
+            image = CreateImage(@"Images\ost.jpg"); //Denna är hidden
 
             descriptionBox = new TextBlock //I den här ListBoxen ska vi visa användaren en lista på valbara produkter från en csv fil.
             {
+                FontSize = 15,
                 Margin = new Thickness(0, 2, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Width = 200,
@@ -203,7 +168,7 @@ namespace FirstApp
 
             //VARUKORGEN Texten högst upp ************************************************************************
             chart = new TextBlock //Detta är titeln som står högst upp "Varukorgen"
-            {
+            {             
                 FontSize = 20,
                 Margin = new Thickness(2),
                 TextAlignment = TextAlignment.Center,
@@ -235,12 +200,13 @@ namespace FirstApp
                 Margin = new Thickness(0, 2, 0, 0)
             };
             addToChart.Children.Add(info);
-            info.Click += ClickedInfo;
+            info.Click += ClickedInfo; //Visar information om den markerade produkten
 
             //LISTA FÖR VARUKORGEN**************************************************************************************************
 
             ChartList = new ListBox //Listbox som ska visa upp de tillagda artiklarna i varukorgen.
             {
+                Background = Brushes.AliceBlue,
                 Margin = new Thickness(0, 2, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Width = 200,
@@ -321,11 +287,26 @@ namespace FirstApp
         }
         private void ClickedInfo(object sender, RoutedEventArgs e)
         {
-            int selectedIndex = productListBox.SelectedIndex;
-            //= listProducts[selectedIndex].Image;
-            descriptionBox.Text = listProducts[selectedIndex].Descprition;     
-        }
+            try
+            {
+                int selectedIndex = productListBox.SelectedIndex;
+                string path = @"Images\" + listProducts[selectedIndex].Image;
 
+                descriptionBox.Text = listProducts[selectedIndex].Descprition; //+ Environment.NewLine + Environment.NewLine + listProducts[selectedIndex].Price.ToString() + "kr";
+
+                image.Source = new BitmapImage(new Uri(path, UriKind.Relative));
+                image.Visibility = Visibility.Visible;
+            }
+            catch
+            {
+                MessageBoxResult warning = MessageBox.Show("Vänligen markera produkt och klicka på: Lägg till/Visa info.", "Hoppsan!", MessageBoxButton.OK, MessageBoxImage.Information);
+                switch (warning)
+                {
+                    case MessageBoxResult.OK:
+                        break;
+                }
+            }
+        }
         private void HasBeenClicked(object sender, RoutedEventArgs e) //Denna metod gör så att boxen blir tömd när man klickar på den.
         {
             bool hasBeenClicked = false;
@@ -338,31 +319,19 @@ namespace FirstApp
                 hasBeenClicked = true;
             }
         }
-        //private Button button(string content, HorizontalAlignment alignment, int margin) //adds for grid
-        //{
-        //    Button x = new Button
-        //    {
-        //        Content = content,
-        //        HorizontalAlignment = alignment,
-        //        Margin = new Thickness(margin),
-        //        Width = 200
-        //    };
-        //    return x;
-        //}
         private Image CreateImage(string filePath)
         {
             ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
             image = new Image
             {
+                Visibility = Visibility.Hidden,
                 Source = source,
                 Width = 100,
-                //Height = 100,
-                Stretch = Stretch.UniformToFill,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 2, 0, 0)
+                Margin = new Thickness(0, 25, 0, 20)
             };
-            //DescBox.Children.Add(image);
+            DescBox.Children.Add(image);
             // A small rendering tweak to ensure maximum visual appeal.
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
             return image;

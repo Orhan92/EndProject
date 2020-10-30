@@ -5,20 +5,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
-
 	<ItemGroup>
 		<Content Include="Images\**">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
-	
-  <ItemGroup>
-    <None Remove="produktLista.csv" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="produktLista.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
 </Project>
