@@ -14,10 +14,14 @@
 	
   <ItemGroup>
     <None Remove="produktLista.csv" />
+    <None Remove="rabattKoder.csv" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="produktLista.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="rabattKoder.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

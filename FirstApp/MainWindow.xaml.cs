@@ -32,16 +32,27 @@ namespace FirstApp
             Image = pictures;
         }
     }
+    public class Discount
+    {
+        public string Code;
+        public int DiscountPercentage;
+
+        public Discount(string code, int discountPercentage)
+        {
+            Code = code;
+            DiscountPercentage = discountPercentage;
+        }
+    }
     public partial class MainWindow : Window
     {
         private Image image;
         private Grid grid;
         private ListBox productListBox, chartList;
         private TextBox discountBox;
-        private TextBlock chart, productDescritpion, productList, descriptionBox;
+        private TextBlock chart, productDescritpion, productList, descriptionBox, totalSumInChart;
         private Button addDiscount, order, empty, save, remove, addItem, info;
         private List<Product> listProducts;
-        private List<string> discountList;
+        private List<Discount> discountList;
         private StackPanel DescBox;
         public MainWindow()
         {
@@ -53,12 +64,12 @@ namespace FirstApp
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
             listProducts = new List<Product>(); //lägger in samtliga objekt ur csv filen hit.
-            discountList = new List<string>(); //lägger in samtliga rabattkoder här.
+            discountList = new List<Discount>(); //lägger in samtliga rabattkoder här.
 
             // Window options
             Title = "Butik";
             Width = 730;
-            Height = 500;
+            Height = 540;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             // Scrolling
@@ -72,6 +83,7 @@ namespace FirstApp
             grid.Margin = new Thickness(5);
 
             //I main griden har vi skapat 5 rader.
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -111,11 +123,23 @@ namespace FirstApp
             Grid.SetColumn(productListBox, 0);
             Grid.SetRow(productListBox, 1);
 
-            //Lääser in från produktLista.csv
-            string[] produktLista = File.ReadAllLines(@"C:\Users\orhan\source\repos\Lektion18GUIhändelser\FirstApp\produktLista.csv");
+            //Läser in från rabattKoder.csv // RABATTKODER
+            string[] discountArray = File.ReadAllLines(@"C:\Users\orhan\source\repos\Lektion18GUIhändelser\FirstApp\rabattKoder.csv");
+            foreach (string code in discountArray)
+            {
+                string[] columns = code.Split(',');
+                string discountCode = columns[0];
+                int discountPercentage = int.Parse(columns[1]);
+
+                Discount y = new Discount(discountCode, discountPercentage);
+                discountList.Add(y);             
+            }
+
+            //Läser in från produktLista.csv // PRODUKTLISTAN
+            string[] productArray = File.ReadAllLines(@"C:\Users\orhan\source\repos\Lektion18GUIhändelser\FirstApp\produktLista.csv");
 
             //Separerar alla ',' och lägger in de i diverse titel här nedan.
-            foreach (string line in produktLista)
+            foreach (string line in productArray)
             {
                 string[] columns = line.Split(',');
                 string titleName = columns[0];
@@ -218,9 +242,36 @@ namespace FirstApp
             Grid.SetColumn(chartList, 2);
             Grid.SetRow(chartList, 1);
 
+            //*********************************************************************************************************************
+            //Created a panel just under chartList to show the total sum of the products.
+
+            StackPanel discountSum = new StackPanel { Orientation = Orientation.Horizontal };
+            grid.Children.Add(discountSum);
+            Grid.SetRow(discountSum, 2);
+            Grid.SetColumn(discountSum, 2);
+
+            TextBlock totalSumLabelInChart = new TextBlock
+            {
+                Margin = new Thickness(0, 2, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Text = "Sum: ",
+                Width = 30
+            };
+            discountSum.Children.Add(totalSumLabelInChart);
+
+            totalSumInChart = new TextBlock
+            {
+                Margin = new Thickness(0, 2, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Text = "**Priset ska visas här**"
+            };
+            discountSum.Children.Add(totalSumInChart);
+
+            //**********************************************************************************************************************
+
             StackPanel discount = new StackPanel { Orientation = Orientation.Horizontal }; //Skapade en ny stackPanel för rabattfäleten
             grid.Children.Add(discount);
-            Grid.SetRow(discount, 2);
+            Grid.SetRow(discount, 3);
             Grid.SetColumn(discount, 2);
 
             addDiscount = new Button //Här är knappen för att lägga till rabattkoden till varukorgen
@@ -246,7 +297,7 @@ namespace FirstApp
             //KNAPPAR INUTI STACKPANELEN FÖR VARUKORGEN*******************************************************************************
             StackPanel buttonChart = new StackPanel { Orientation = Orientation.Horizontal }; // skapad för att lägga till knapparna under varukorgen
             grid.Children.Add(buttonChart);
-            Grid.SetRow(buttonChart, 3);
+            Grid.SetRow(buttonChart, 4);
             Grid.SetColumn(buttonChart, 2);
 
             remove = new Button //Ta bort en produkt (genom att markera den och klicka på denna knappen)
@@ -268,7 +319,7 @@ namespace FirstApp
 
             StackPanel secondButtonChart = new StackPanel { Orientation = Orientation.Horizontal }; // skapad för att lägga till knapparna under varukorgen
             grid.Children.Add(secondButtonChart);
-            Grid.SetRow(secondButtonChart, 4);
+            Grid.SetRow(secondButtonChart, 5);
             Grid.SetColumn(secondButtonChart, 2);
 
             empty = new Button //TÖM Knappen
