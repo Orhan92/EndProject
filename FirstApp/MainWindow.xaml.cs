@@ -35,7 +35,7 @@ namespace FirstApp
     {
         private Image image;
         private Grid grid;
-        private ListBox productListBox, ChartList;
+        private ListBox productListBox, chartList;
         private TextBox discountBox;
         private TextBlock chart, productDescritpion, productList, descriptionBox;
         private Button addDiscount, order, empty, save, remove, addItem, info;
@@ -83,7 +83,6 @@ namespace FirstApp
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
             grid.Visibility = Visibility.Visible;
-
 
             // FÖRSTA KOLUMNEN I GRIDDEN*****************************************************************
 
@@ -168,7 +167,7 @@ namespace FirstApp
 
             //VARUKORGEN Texten högst upp ************************************************************************
             chart = new TextBlock //Detta är titeln som står högst upp "Varukorgen"
-            {             
+            {
                 FontSize = 20,
                 Margin = new Thickness(2),
                 TextAlignment = TextAlignment.Center,
@@ -192,6 +191,7 @@ namespace FirstApp
                 Margin = new Thickness(0, 2, 0, 0)
             };
             addToChart.Children.Add(addItem);
+            addItem.Click += ClickedAddToChart;
 
             info = new Button //När användaren klickar här så ska produktbeskrivning visas i kolumn 1 (mitten kolumnen)
             {
@@ -204,7 +204,7 @@ namespace FirstApp
 
             //LISTA FÖR VARUKORGEN**************************************************************************************************
 
-            ChartList = new ListBox //Listbox som ska visa upp de tillagda artiklarna i varukorgen.
+            chartList = new ListBox //Listbox som ska visa upp de tillagda artiklarna i varukorgen.
             {
                 Background = Brushes.AliceBlue,
                 Margin = new Thickness(0, 2, 0, 0),
@@ -212,9 +212,9 @@ namespace FirstApp
                 Width = 200,
                 Height = 350
             };
-            grid.Children.Add(ChartList);
-            Grid.SetColumn(ChartList, 2);
-            Grid.SetRow(ChartList, 1);
+            grid.Children.Add(chartList);
+            Grid.SetColumn(chartList, 2);
+            Grid.SetRow(chartList, 1);
 
             StackPanel discount = new StackPanel { Orientation = Orientation.Horizontal }; //Skapade en ny stackPanel för rabattfäleten
             grid.Children.Add(discount);
@@ -254,6 +254,7 @@ namespace FirstApp
                 Margin = new Thickness(0, 2, 0, 0)
             };
             buttonChart.Children.Add(remove);
+            remove.Click += ClickedRemove;
 
             save = new Button //Spara varukorgen till en csv fil i temp mappen.
             {
@@ -275,6 +276,7 @@ namespace FirstApp
                 Margin = new Thickness(0, 2, 0, 0)
             };
             secondButtonChart.Children.Add(empty);
+            empty.Click += ClickedEmptyAll;
 
             order = new Button //Beställ knappen som ska leda till att användaren får en "Tack förbeställningen"-ruta med detaljer för beställningen
             {
@@ -284,6 +286,47 @@ namespace FirstApp
             };
             secondButtonChart.Children.Add(order);
             //***********************************************************************************************
+        }
+
+        private void ClickedEmptyAll(object sender, RoutedEventArgs e)
+        {
+            chartList.Items.Clear();
+        }
+
+        private void ClickedRemove(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int selectedIndex = chartList.SelectedIndex;
+                chartList.Items.RemoveAt(selectedIndex);
+            }
+            catch
+            {
+                MessageBoxResult warning = MessageBox.Show("Vänligen markera produkt som du vill ta bort.", "Hoppsan!", MessageBoxButton.OK, MessageBoxImage.Information);
+                switch (warning)
+                {
+                    case MessageBoxResult.OK:
+                        break;
+                }
+            }
+        }
+
+        private void ClickedAddToChart(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int selectedIndex = productListBox.SelectedIndex;
+                chartList.Items.Add(listProducts[selectedIndex].Title + " | " + listProducts[selectedIndex].Price + "kr");
+            }
+            catch
+            {
+                MessageBoxResult warning = MessageBox.Show("Vänligen markera den produkt som du vill lägga till i varukorgen.", "Hoppsan!", MessageBoxButton.OK, MessageBoxImage.Information);
+                switch (warning)
+                {
+                    case MessageBoxResult.OK:
+                        break;
+                }
+            }
         }
         private void ClickedInfo(object sender, RoutedEventArgs e)
         {
@@ -299,7 +342,7 @@ namespace FirstApp
             }
             catch
             {
-                MessageBoxResult warning = MessageBox.Show("Vänligen markera produkt och klicka på: Lägg till/Visa info.", "Hoppsan!", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBoxResult warning = MessageBox.Show("Vänligen markera produkt för att visa info.", "Hoppsan!", MessageBoxButton.OK, MessageBoxImage.Information);
                 switch (warning)
                 {
                     case MessageBoxResult.OK:
