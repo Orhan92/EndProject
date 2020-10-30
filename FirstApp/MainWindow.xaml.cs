@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.CompilerServices;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -155,6 +156,7 @@ namespace FirstApp
 
             descriptionBox = new TextBlock //I den här ListBoxen ska vi visa användaren en lista på valbara produkter från en csv fil.
             {
+
                 FontSize = 15,
                 Margin = new Thickness(0, 2, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -290,7 +292,15 @@ namespace FirstApp
 
         private void ClickedEmptyAll(object sender, RoutedEventArgs e)
         {
-            chartList.Items.Clear();
+            MessageBoxResult warning = MessageBox.Show("Är du säker att du vill tömma varukorgen? Ja/Nej.", "Varning!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+            switch (warning)
+            {
+                case MessageBoxResult.Yes:
+                    chartList.Items.Clear();
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
         }
 
         private void ClickedRemove(object sender, RoutedEventArgs e)
@@ -310,13 +320,17 @@ namespace FirstApp
                 }
             }
         }
-
         private void ClickedAddToChart(object sender, RoutedEventArgs e)
         {
             try
             {
                 int selectedIndex = productListBox.SelectedIndex;
                 chartList.Items.Add(listProducts[selectedIndex].Title + " | " + listProducts[selectedIndex].Price + "kr");
+
+                //Kod nedan sorterar det som läggs till i varukorgen i bokstavsordning.
+                //    chartList.Items.SortDescriptions.Add(
+                //new System.ComponentModel.SortDescription("",
+                //System.ComponentModel.ListSortDirection.Ascending));
             }
             catch
             {
