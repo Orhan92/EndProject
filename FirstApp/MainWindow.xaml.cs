@@ -36,9 +36,9 @@ namespace FirstApp
     public class Discount
     {
         public string Code;
-        public int DiscountPercentage;
+        public decimal DiscountPercentage;
 
-        public Discount(string code, int discountPercentage)
+        public Discount(string code, decimal discountPercentage)
         {
             Code = code;
             DiscountPercentage = discountPercentage;
@@ -52,7 +52,7 @@ namespace FirstApp
         private TextBox discountBox;
         private TextBlock chart, productDescritpion, productList, descriptionBox, totalSumInChart;
         private Button addDiscount, order, empty, save, remove, addItem, info;
-        private List<Product> listProducts;
+        private List<Product> listProducts, cartList;
         private List<Discount> discountList;
         private StackPanel DescBox;
         private decimal totalSum;
@@ -63,10 +63,9 @@ namespace FirstApp
         }
         private void Start()
         {
-            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-
             listProducts = new List<Product>(); //lägger in samtliga objekt ur csv filen hit.
             discountList = new List<Discount>(); //lägger in samtliga rabattkoder här.
+            cartList = new List<Product>();  //Dokumentera om denna delen, att det var svårt att förstå att jag behövde lägga in saker från listProducts in i en ny lista (den här listan) för att kunna manipulera den i chartListBox.
 
             // Window options
             Title = "Butik";
@@ -126,19 +125,19 @@ namespace FirstApp
             Grid.SetRow(productListBox, 1);
 
             //Läser in från rabattKoder.csv // RABATTKODER
-            string[] discountArray = File.ReadAllLines(@"C:\Users\orhan\source\repos\Lektion18GUIhändelser\FirstApp\rabattKoder.csv");
+            string[] discountArray = File.ReadAllLines("rabattKoder.csv");
             foreach (string code in discountArray)
             {
                 string[] columns = code.Split(',');
                 string discountCode = columns[0];
-                int discountPercentage = int.Parse(columns[1]);
+                decimal discountPercentage = decimal.Parse(columns[1].Replace('.', ','));
 
                 Discount y = new Discount(discountCode, discountPercentage);
                 discountList.Add(y);
             }
 
             //Läser in från produktLista.csv // PRODUKTLISTAN
-            string[] productArray = File.ReadAllLines(@"C:\Users\orhan\source\repos\Lektion18GUIhändelser\FirstApp\produktLista.csv");
+            string[] productArray = File.ReadAllLines("produktLista.csv");
 
             //Separerar alla ',' och lägger in de i diverse titel här nedan.
             foreach (string line in productArray)
@@ -146,7 +145,7 @@ namespace FirstApp
                 string[] columns = line.Split(',');
                 string titleName = columns[0];
                 string descriptionProduct = columns[1];
-                decimal productPrice = decimal.Parse(columns[2]);
+                decimal productPrice = decimal.Parse(columns[2].Replace('.',','));
                 string pictures = columns[3];
 
                 //För varje rad i csv filen skapar vi ett nytt objekt (x) av klassen.
@@ -157,7 +156,7 @@ namespace FirstApp
             //Här säger vi att för varje objekt (x) i klassen Product, skriv ut x.Title och x.Price i productListBox.
             foreach (Product x in listProducts)
             {
-                productListBox.Items.Add(x.Title + " (" + x.Price + ")kr");
+                productListBox.Items.Add(x.Title + " | " + x.Price.ToString("C"));
             }
 
             //KOLUMN 2 PRODUKTBESKRIVNING************************************************************************
@@ -261,23 +260,14 @@ namespace FirstApp
             };
             discountSum.Children.Add(totalSumLabelInChart);
 
-            //in med metod här istället för kod nedan.
-
             totalSumInChart = new TextBlock
             {
                 Foreground = Brushes.ForestGreen,
                 Margin = new Thickness(0, 2, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
+                //Text = totalSum.ToString()
             };
             discountSum.Children.Add(totalSumInChart);
-
-            //totalSumInChart = new TextBlock
-            //{
-            //    Margin = new Thickness(0, 2, 0, 0),
-            //    HorizontalAlignment = HorizontalAlignment.Center,
-            //    Text = "**Priset ska visas här**"
-            //};
-            //discountSum.Children.Add(totalSumInChart);
 
             //**********************************************************************************************************************
 
@@ -293,6 +283,7 @@ namespace FirstApp
                 Margin = new Thickness(0, 2, 2, 0)
             };
             discount.Children.Add(addDiscount);
+            addDiscount.Click += AddDiscount;
 
             discountBox = new TextBox //Inuti denna boxen matar användaren in rabattkoden,      Denna är initierad högs upp
             {
@@ -352,6 +343,11 @@ namespace FirstApp
             secondButtonChart.Children.Add(order);
             //***********************************************************************************************
         }
+        private void AddDiscount(object sender, RoutedEventArgs e)
+        {
+            //Kod som ska beräkna discounten. se :https://stackoverflow.com/questions/4561374/percentage-calculation  
+        }
+
         private void ClickedEmptyAll(object sender, RoutedEventArgs e)
         {
             MessageBoxResult warning = MessageBox.Show("Är du säker att du vill tömma varukorgen? Ja/Nej.", "Varning!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
@@ -359,11 +355,12 @@ namespace FirstApp
             {
                 case MessageBoxResult.Yes:
                     chartListBox.Items.Clear();
+                    cartList.Clear();
 
                     totalSum = 0; //Rensar totalsumman och sätter den på 0
-                    totalSumInChart.Text = totalSum.ToString() + "kr"; //Vi sätter även Summan: 0.
-
+                    totalSumInChart.Text = totalSum.ToString("C"); //Vi sätter även Summan: 0. 
                     break;
+
                 case MessageBoxResult.No:
                     break;
             }
@@ -372,15 +369,16 @@ namespace FirstApp
         {
             try
             {
-                //int selectedIndex = chartListBox.SelectedIndex;
+                int foodIndex = chartListBox.SelectedIndex;
+                chartListBox.Items.RemoveAt(foodIndex);
 
-                int selectedIndex = chartListBox.SelectedIndex;
-                chartListBox.Items.RemoveAt(selectedIndex);
+                //Dokumentera om denna delen, att den var sjukt svår.
+                Product p = cartList[foodIndex];
+                totalSum -= p.Price;
+                totalSumInChart.Text = totalSum.ToString("C"); 
+                //"C" Sätter currency baserat på valutan i ditt land. I mitt fall "kr"
 
-                totalSum -= chartListBox.SelectedItems.;
-                //Kod här som ska räkna ut hur mycket totalSum är när man tagit bort produkt från chartListBox.
-                //totalSum -= decimal.Parse(selectedIndex).Price;
-                totalSumInChart.Text = Math.Round(totalSum, 2).ToString() + "kr";
+                cartList.RemoveAt(foodIndex);
             }
             catch
             {
@@ -396,17 +394,19 @@ namespace FirstApp
         {
             try
             {
+                //Dokumentera om denna delen, att den var sjukt svår.
+                chartListBox.Items.Clear();
                 int selectedIndex = productListBox.SelectedIndex;
-                chartListBox.Items.Add(listProducts[selectedIndex].Title + " | " + listProducts[selectedIndex].Price + "kr");
+                cartList.Add(listProducts[selectedIndex]);
+
+                foreach (Product x in cartList)
+                {
+                    chartListBox.Items.Add(x.Title + " | " + x.Price.ToString("C"));
+                }
 
                 //För att visa priset av totalsumman i varukorgen!
                 totalSum += listProducts[selectedIndex].Price;
-                totalSumInChart.Text = Math.Round(totalSum, 2).ToString() + "kr";
-
-                //Kod nedan sorterar det som läggs till i varukorgen i bokstavsordning.
-                //    chartList.Items.SortDescriptions.Add(
-                //new System.ComponentModel.SortDescription("",
-                //System.ComponentModel.ListSortDirection.Ascending));
+                totalSumInChart.Text = Math.Round(totalSum, 2).ToString("C");
             }
             catch
             {
@@ -469,21 +469,5 @@ namespace FirstApp
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
             return image;
         }
-        //private string TotalSumInChart()
-        //{
-
-        //    //totalSumInChart = new TextBlock
-        //    //{
-        //    //    Margin = new Thickness(0, 2, 0, 0),
-        //    //    HorizontalAlignment = HorizontalAlignment.Center,
-        //    //};
-
-        //    foreach (decimal x in chartListBox.Items)
-        //    {
-        //        totalSum += x;
-        //    }
-        //    Math.Round(totalSum, 2);
-        //    return totalSumInChart.Text = totalSum.ToString();
-        //}
     }
 }
