@@ -345,8 +345,44 @@ namespace FirstApp
         }
         private void AddDiscount(object sender, RoutedEventArgs e)
         {
-            //Kod som ska beräkna discounten. se :https://stackoverflow.com/questions/4561374/percentage-calculation  
-        }
+            decimal one = 0.8m;
+            decimal two = 0.7m;
+            decimal three = 0.15m;
+
+            if (discountBox.Text == "bramat8")
+            {
+                totalSum *= one;
+            }
+            else if (discountBox.Text == "billigt10")
+            {
+                totalSum *= two;
+            }
+            else if (discountBox.Text == "jakobsmat")
+            {
+                totalSum *= three;
+            }
+            else if (discountBox.Text == "Rabattkod")
+            {
+                totalSum = totalSum;
+                MessageBoxResult warning = MessageBox.Show("Du använder ingen rabattkod", "Hoppsan!", MessageBoxButton.OK, MessageBoxImage.Information);
+                switch (warning)
+                {
+                    case MessageBoxResult.OK:
+                        break;
+                }
+            }
+            else
+            {
+                MessageBoxResult warning = MessageBox.Show("Du använder ingen giltig rabattkod", "Hoppsan!", MessageBoxButton.OK, MessageBoxImage.Information);
+                switch (warning)
+                {
+                    case MessageBoxResult.OK:
+                        break;
+                }
+            }
+            totalSumInChart.Text = totalSum.ToString("C");
+
+        }//Den här koden måste skrivas om!!!!!!!
 
         private void ClickedEmptyAll(object sender, RoutedEventArgs e)
         {
