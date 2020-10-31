@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Printing;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -47,13 +48,14 @@ namespace FirstApp
     {
         private Image image;
         private Grid grid;
-        private ListBox productListBox, chartList;
+        private ListBox productListBox, chartListBox;
         private TextBox discountBox;
         private TextBlock chart, productDescritpion, productList, descriptionBox, totalSumInChart;
         private Button addDiscount, order, empty, save, remove, addItem, info;
         private List<Product> listProducts;
         private List<Discount> discountList;
         private StackPanel DescBox;
+        private decimal totalSum;
         public MainWindow()
         {
             InitializeComponent();
@@ -132,7 +134,7 @@ namespace FirstApp
                 int discountPercentage = int.Parse(columns[1]);
 
                 Discount y = new Discount(discountCode, discountPercentage);
-                discountList.Add(y);             
+                discountList.Add(y);
             }
 
             //Läser in från produktLista.csv // PRODUKTLISTAN
@@ -230,7 +232,7 @@ namespace FirstApp
 
             //LISTA FÖR VARUKORGEN**************************************************************************************************
 
-            chartList = new ListBox //Listbox som ska visa upp de tillagda artiklarna i varukorgen.
+            chartListBox = new ListBox //Listbox som ska visa upp de tillagda artiklarna i varukorgen.
             {
                 Background = Brushes.AliceBlue,
                 Margin = new Thickness(0, 2, 0, 0),
@@ -238,9 +240,9 @@ namespace FirstApp
                 Width = 200,
                 Height = 350
             };
-            grid.Children.Add(chartList);
-            Grid.SetColumn(chartList, 2);
-            Grid.SetRow(chartList, 1);
+            grid.Children.Add(chartListBox);
+            Grid.SetColumn(chartListBox, 2);
+            Grid.SetRow(chartListBox, 1);
 
             //*********************************************************************************************************************
             //Created a panel just under chartList to show the total sum of the products.
@@ -254,18 +256,28 @@ namespace FirstApp
             {
                 Margin = new Thickness(0, 2, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Text = "Sum: ",
-                Width = 30
+                Text = "Summa: ",
+                Width = 50
             };
             discountSum.Children.Add(totalSumLabelInChart);
 
+            //in med metod här istället för kod nedan.
+
             totalSumInChart = new TextBlock
             {
+                Foreground = Brushes.ForestGreen,
                 Margin = new Thickness(0, 2, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
-                Text = "**Priset ska visas här**"
             };
             discountSum.Children.Add(totalSumInChart);
+
+            //totalSumInChart = new TextBlock
+            //{
+            //    Margin = new Thickness(0, 2, 0, 0),
+            //    HorizontalAlignment = HorizontalAlignment.Center,
+            //    Text = "**Priset ska visas här**"
+            //};
+            //discountSum.Children.Add(totalSumInChart);
 
             //**********************************************************************************************************************
 
@@ -340,26 +352,35 @@ namespace FirstApp
             secondButtonChart.Children.Add(order);
             //***********************************************************************************************
         }
-
         private void ClickedEmptyAll(object sender, RoutedEventArgs e)
         {
             MessageBoxResult warning = MessageBox.Show("Är du säker att du vill tömma varukorgen? Ja/Nej.", "Varning!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
             switch (warning)
             {
                 case MessageBoxResult.Yes:
-                    chartList.Items.Clear();
+                    chartListBox.Items.Clear();
+
+                    totalSum = 0; //Rensar totalsumman och sätter den på 0
+                    totalSumInChart.Text = totalSum.ToString() + "kr"; //Vi sätter även Summan: 0.
+
                     break;
                 case MessageBoxResult.No:
                     break;
             }
         }
-
         private void ClickedRemove(object sender, RoutedEventArgs e)
         {
             try
             {
-                int selectedIndex = chartList.SelectedIndex;
-                chartList.Items.RemoveAt(selectedIndex);
+                //int selectedIndex = chartListBox.SelectedIndex;
+
+                int selectedIndex = chartListBox.SelectedIndex;
+                chartListBox.Items.RemoveAt(selectedIndex);
+
+                totalSum -= chartListBox.SelectedItems.;
+                //Kod här som ska räkna ut hur mycket totalSum är när man tagit bort produkt från chartListBox.
+                //totalSum -= decimal.Parse(selectedIndex).Price;
+                totalSumInChart.Text = Math.Round(totalSum, 2).ToString() + "kr";
             }
             catch
             {
@@ -376,7 +397,11 @@ namespace FirstApp
             try
             {
                 int selectedIndex = productListBox.SelectedIndex;
-                chartList.Items.Add(listProducts[selectedIndex].Title + " | " + listProducts[selectedIndex].Price + "kr");
+                chartListBox.Items.Add(listProducts[selectedIndex].Title + " | " + listProducts[selectedIndex].Price + "kr");
+
+                //För att visa priset av totalsumman i varukorgen!
+                totalSum += listProducts[selectedIndex].Price;
+                totalSumInChart.Text = Math.Round(totalSum, 2).ToString() + "kr";
 
                 //Kod nedan sorterar det som läggs till i varukorgen i bokstavsordning.
                 //    chartList.Items.SortDescriptions.Add(
@@ -400,7 +425,7 @@ namespace FirstApp
                 int selectedIndex = productListBox.SelectedIndex;
                 string path = @"Images\" + listProducts[selectedIndex].Image;
 
-                descriptionBox.Text = listProducts[selectedIndex].Descprition; //+ Environment.NewLine + Environment.NewLine + listProducts[selectedIndex].Price.ToString() + "kr";
+                descriptionBox.Text = listProducts[selectedIndex].Descprition;
 
                 image.Source = new BitmapImage(new Uri(path, UriKind.Relative));
                 image.Visibility = Visibility.Visible;
@@ -444,5 +469,21 @@ namespace FirstApp
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
             return image;
         }
+        //private string TotalSumInChart()
+        //{
+
+        //    //totalSumInChart = new TextBlock
+        //    //{
+        //    //    Margin = new Thickness(0, 2, 0, 0),
+        //    //    HorizontalAlignment = HorizontalAlignment.Center,
+        //    //};
+
+        //    foreach (decimal x in chartListBox.Items)
+        //    {
+        //        totalSum += x;
+        //    }
+        //    Math.Round(totalSum, 2);
+        //    return totalSumInChart.Text = totalSum.ToString();
+        //}
     }
 }
