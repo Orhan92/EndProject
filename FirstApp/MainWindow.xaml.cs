@@ -125,16 +125,16 @@ namespace FirstApp
             Grid.SetRow(productListBox, 1);
 
             //Läser in från rabattKoder.csv // RABATTKODER
-            string[] discountArray = File.ReadAllLines("rabattKoder.csv");
-            foreach (string code in discountArray)
-            {
-                string[] columns = code.Split(',');
-                string discountCode = columns[0];
-                decimal discountPercentage = decimal.Parse(columns[1].Replace('.', ','));
+            //string[] discountArray = File.ReadAllLines("rabattKoder.csv");
+            //foreach (string code in discountArray)
+            //{
+            //    string[] columns = code.Split(',');
+            //    string discountCode = columns[0];
+            //    decimal discountPercentage = decimal.Parse(columns[1].Replace('.', ','));
 
-                Discount y = new Discount(discountCode, discountPercentage);
-                discountList.Add(y);
-            }
+            //    Discount y = new Discount(discountCode, discountPercentage);
+            //    discountList.Add(y);
+            //}
 
             //Läser in från produktLista.csv // PRODUKTLISTAN
             string[] productArray = File.ReadAllLines("produktLista.csv");
@@ -145,7 +145,7 @@ namespace FirstApp
                 string[] columns = line.Split(',');
                 string titleName = columns[0];
                 string descriptionProduct = columns[1];
-                decimal productPrice = decimal.Parse(columns[2].Replace('.',','));
+                decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
                 string pictures = columns[3];
 
                 //För varje rad i csv filen skapar vi ett nytt objekt (x) av klassen.
@@ -269,7 +269,7 @@ namespace FirstApp
             };
             discountSum.Children.Add(totalSumInChart);
 
-            //**********************************************************************************************************************
+            //**********************************************************************************************************
 
             StackPanel discount = new StackPanel { Orientation = Orientation.Horizontal }; //Skapade en ny stackPanel för rabattfäleten
             grid.Children.Add(discount);
@@ -345,44 +345,32 @@ namespace FirstApp
         }
         private void AddDiscount(object sender, RoutedEventArgs e)
         {
-            decimal one = 0.8m;
-            decimal two = 0.7m;
-            decimal three = 0.15m;
+            //Gör så att det inte spelar någon roll om användaren knappar in stora eller små bokstäver.
+            discountBox.Text = discountBox.Text.ToLower(); 
 
-            if (discountBox.Text == "bramat8")
+            string[] discountArray = File.ReadAllLines("rabattKoder.csv");
+            foreach (string code in discountArray)
             {
-                totalSum *= one;
-            }
-            else if (discountBox.Text == "billigt10")
-            {
-                totalSum *= two;
-            }
-            else if (discountBox.Text == "jakobsmat")
-            {
-                totalSum *= three;
-            }
-            else if (discountBox.Text == "Rabattkod")
-            {
-                totalSum = totalSum;
-                MessageBoxResult warning = MessageBox.Show("Du använder ingen rabattkod", "Hoppsan!", MessageBoxButton.OK, MessageBoxImage.Information);
-                switch (warning)
+                string[] columns = code.Split(',');
+                string discountCode = columns[0];
+                decimal discountPercentage = decimal.Parse(columns[1].Replace('.', ','));
+
+                Discount y = new Discount(discountCode, discountPercentage);
+                discountList.Add(y);
+
+                if (discountBox.Text.Contains(y.Code)) 
                 {
-                    case MessageBoxResult.OK:
-                        break;
+                    discountBox.Background = Brushes.LightGreen;
+                    Math.Round(totalSum *= y.DiscountPercentage, 0); //Kolla varför den inte avrundar till , 0 här.
+                    totalSumInChart.Text = totalSum.ToString("C") + " | Rabatt: " + (100 - (y.DiscountPercentage * 100)) + "%";
+                    break;
+                }
+                else
+                {
+                    discountBox.Background = Brushes.OrangeRed;
                 }
             }
-            else
-            {
-                MessageBoxResult warning = MessageBox.Show("Du använder ingen giltig rabattkod", "Hoppsan!", MessageBoxButton.OK, MessageBoxImage.Information);
-                switch (warning)
-                {
-                    case MessageBoxResult.OK:
-                        break;
-                }
-            }
-            totalSumInChart.Text = totalSum.ToString("C");
-
-        }//Den här koden måste skrivas om!!!!!!!
+        }
 
         private void ClickedEmptyAll(object sender, RoutedEventArgs e)
         {
@@ -411,7 +399,7 @@ namespace FirstApp
                 //Dokumentera om denna delen, att den var sjukt svår.
                 Product p = cartList[foodIndex];
                 totalSum -= p.Price;
-                totalSumInChart.Text = totalSum.ToString("C"); 
+                totalSumInChart.Text = totalSum.ToString("C");
                 //"C" Sätter currency baserat på valutan i ditt land. I mitt fall "kr"
 
                 cartList.RemoveAt(foodIndex);
@@ -442,7 +430,7 @@ namespace FirstApp
 
                 //För att visa priset av totalsumman i varukorgen!
                 totalSum += listProducts[selectedIndex].Price;
-                totalSumInChart.Text = Math.Round(totalSum, 2).ToString("C");
+                totalSumInChart.Text = Math.Round(totalSum, 0).ToString("C");
             }
             catch
             {
