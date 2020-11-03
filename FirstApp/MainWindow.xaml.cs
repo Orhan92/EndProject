@@ -523,9 +523,7 @@ namespace FirstApp
                 {
                     discountBox.Background = Brushes.OrangeRed;
                 }
-            }
-
-           
+            }         
         }
         private void ClickedEmptyAll(object sender, RoutedEventArgs e)
         {
