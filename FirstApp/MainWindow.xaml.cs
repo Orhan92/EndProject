@@ -46,14 +46,14 @@ namespace FirstApp
     public partial class MainWindow : Window
     {
         private Image image;
-        private Grid grid;
-        private ListBox productListBox, chartListBox;
+        private Grid grid, orderGrid;
+        private ListBox productListBox, chartListBox, orderedProducts;
         private TextBox discountBox;
-        private TextBlock chart, productDescritpion, productList, descriptionBox, totalSumInChart, discountEnabled;
+        private TextBlock chart, productDescritpion, productList, descriptionBox, discountEnabled, orderLabel, orderSum, totalSumInChart;
         private Button addDiscount, order, empty, save, remove, addItem, info;
         private List<Product> listProducts, cartList;
         private List<Discount> discountList;
-        private StackPanel DescBox;
+        private StackPanel DescBox, addToChart, discountSum, discount, buttonChart, secondButtonChart;
         private decimal totalSum;
         public MainWindow()
         {
@@ -92,13 +92,63 @@ namespace FirstApp
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.Visibility = Visibility.Visible;
 
+            //****************************ALLT VID BESTÄLLNING***************************************
+            //Denna grid ska visas upp vid bestälnning.
+            //orderGrid = new Grid();
+            //grid.Children.Add(orderGrid);
+            //Grid.SetColumn(orderGrid, 1);
+            //Grid.SetRow(orderGrid, 0);
+
+            //orderGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //Label
+            //orderGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //Content
+            //orderGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //Sum + %
+
+            //orderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });           
+            //orderLabel = new TextBlock //Detta är titeln som står högst upp "Produktbeskrivning"
+            //{
+            //    FontSize = 20,
+            //    Margin = new Thickness(2),
+            //    TextAlignment = TextAlignment.Center,
+            //    Width = 200,
+            //    Text = "Tack för din beställning!"
+            //};
+            //orderGrid.Children.Add(orderLabel);
+            //Grid.SetColumn(orderLabel, 0);
+            //Grid.SetRow(orderLabel, 0);
+
+            //orderedProducts = new ListBox
+            //{
+            //    Background = Brushes.AliceBlue,
+            //    Margin = new Thickness(0, 2, 0, 0),
+            //    HorizontalAlignment = HorizontalAlignment.Center,
+            //    Width = 200,
+            //    Height = 350,
+            //};
+            //orderGrid.Children.Add(orderedProducts);
+            //Grid.SetColumn(orderedProducts, 0);
+            //Grid.SetRow(orderedProducts, 1);
+
+            //orderSum = new TextBlock //Detta är titeln som står högst upp "Produktbeskrivning"
+            //{
+            //    FontSize = 20,
+            //    Margin = new Thickness(2),
+            //    TextAlignment = TextAlignment.Center,
+            //    Width = 200,
+            //    //Text = "Tack för din beställning!" //Här ska vi skriva ut totalsumman och Ev. Rabatt
+            //};
+            //orderGrid.Children.Add(orderSum);
+            //Grid.SetColumn(orderSum, 0);
+            //Grid.SetRow(orderSum, 2);
+
+            //orderGrid.Visibility = Visibility.Collapsed; //Detta för att den inte ska synas i gird (Main gridden) eller skapa tomrum i grid.
+
+            //**************************************************************************************
+
             listProducts = new List<Product>(); //lägger in samtliga objekt ur csv filen hit.
             discountList = new List<Discount>(); //lägger in samtliga rabattkoder här.
             cartList = new List<Product>();  //Dokumentera om denna delen, att det var svårt att förstå att jag behövde lägga in saker från listProducts in i en ny lista (den här listan) för att kunna manipulera den i chartListBox.
 
-            // FÖRSTA KOLUMNEN I GRIDDEN*****************************************************************
-
-            //Läser in rabattkoderna.
+            // FÖRSTA KOLUMNEN I GRIDDEN*************************************************************
 
             //läser in produktlistan
             string[] productArray = File.ReadAllLines("produktLista.csv");
@@ -193,7 +243,7 @@ namespace FirstApp
             Grid.SetRow(chart, 0);
 
             //STACK PANEL FÖR KNAPPARNA I PRODUKTLISTAN*****************************************************************************
-            StackPanel addToChart = new StackPanel { Orientation = Orientation.Horizontal }; //Denna StackPanel är skapad för info och lägg till knapparna.
+            addToChart = new StackPanel { Orientation = Orientation.Horizontal }; //Denna StackPanel är skapad för info och lägg till knapparna.
             grid.Children.Add(addToChart);
             Grid.SetRow(addToChart, 2);
             Grid.SetColumn(addToChart, 0);
@@ -231,7 +281,7 @@ namespace FirstApp
             //*********************************************************************************************************************
             //Created a panel just under chartList to show the total sum of the products.
 
-            StackPanel discountSum = new StackPanel { Orientation = Orientation.Horizontal };
+            discountSum = new StackPanel { Orientation = Orientation.Horizontal };
             grid.Children.Add(discountSum);
             Grid.SetRow(discountSum, 2);
             Grid.SetColumn(discountSum, 2);
@@ -255,7 +305,7 @@ namespace FirstApp
             discountSum.Children.Add(totalSumInChart);
 
             //**********************************************************************************************************
-            StackPanel discount = new StackPanel { Orientation = Orientation.Horizontal }; //Skapade en ny stackPanel för rabattfäleten
+            discount = new StackPanel { Orientation = Orientation.Horizontal }; //Skapade en ny stackPanel för rabattfäleten
             grid.Children.Add(discount);
             Grid.SetRow(discount, 3);
             Grid.SetColumn(discount, 2);
@@ -294,7 +344,7 @@ namespace FirstApp
             discountBox.GotFocus += HasBeenClicked; //Skapar en metod för vad som ska hända när användaren klickar i rabatt rutan.
 
             //KNAPPAR INUTI STACKPANELEN FÖR VARUKORGEN*******************************************************************************
-            StackPanel buttonChart = new StackPanel { Orientation = Orientation.Horizontal }; // skapad för att lägga till knapparna under varukorgen
+            buttonChart = new StackPanel { Orientation = Orientation.Horizontal }; // skapad för att lägga till knapparna under varukorgen
             grid.Children.Add(buttonChart);
             Grid.SetRow(buttonChart, 4);
             Grid.SetColumn(buttonChart, 2);
@@ -316,7 +366,7 @@ namespace FirstApp
             };
             buttonChart.Children.Add(save);
 
-            StackPanel secondButtonChart = new StackPanel { Orientation = Orientation.Horizontal }; // skapad för att lägga till knapparna under varukorgen
+            secondButtonChart = new StackPanel { Orientation = Orientation.Horizontal }; // skapad för att lägga till knapparna under varukorgen
             grid.Children.Add(secondButtonChart);
             Grid.SetRow(secondButtonChart, 5);
             Grid.SetColumn(secondButtonChart, 2);
@@ -337,8 +387,17 @@ namespace FirstApp
                 Margin = new Thickness(0, 2, 0, 0)
             };
             secondButtonChart.Children.Add(order);
+            order.Click += ClickedOrder;
             //***********************************************************************************************
         }
+
+        private void ClickedOrder(object sender, RoutedEventArgs e)
+        {
+
+            grid.Visibility = Visibility.Collapsed;
+            orderGrid.Visibility = Visibility.Visible;
+        }
+
         private void AddDiscount(object sender, RoutedEventArgs e)
         {
             discountList.Clear();
@@ -398,7 +457,7 @@ namespace FirstApp
 
                     discountBox.Visibility = Visibility.Visible;
                     addDiscount.Visibility = Visibility.Visible;
-                    discountEnabled.Visibility = Visibility.Collapsed;
+                    discountEnabled.Visibility = Visibility.Collapsed; //Så att den inte tar någon plats alls i main griden.
 
                     //Nollställer rabattexten som användaren får knappa in till sitt urpsrungstillstånd
                     discountBox.Foreground = Brushes.Gray;
