@@ -101,7 +101,7 @@ namespace FirstApp
             discountList = new List<Discount>(); //lägger in samtliga rabattkoder här.
             cartList = new List<Product>();  //Dokumentera om denna delen, att det var svårt att förstå att jag behövde lägga in saker från listProducts in i en ny lista (den här listan) för att kunna manipulera den i chartListBox.
 
-            // FÖRSTA KOLUMNEN I GRIDDEN*************************************************************
+            // FÖRSTA KOLUMNEN 0 GRIDDEN***********************************************************
 
             //läser in produktlistan
             string[] productArray = File.ReadAllLines("produktLista.csv");
@@ -150,7 +150,7 @@ namespace FirstApp
                 productListBox.Items.Add(x.Title + " | " + x.Price.ToString("C"));
             }
 
-            //KOLUMN 2 ************************************************************************
+            //KOLUMN 1 ************************************************************************
             productDescritpion = new TextBlock //Detta är titeln som står högst upp "Produktbeskrivning"
             {
                 FontSize = 20,
@@ -183,7 +183,7 @@ namespace FirstApp
             };
             DescBox.Children.Add(descriptionBox);
 
-            //STACKPANEL VID BESTÄLLNING I KOLUMN 1.
+            //STACKPANEL VID BESTÄLLNING I KOLUMN 2.
             orderPanel = new StackPanel { Orientation = Orientation.Vertical };
             grid.Children.Add(orderPanel);
             Grid.SetColumn(orderPanel, 1);
@@ -203,7 +203,7 @@ namespace FirstApp
 
             orderSum = new TextBlock
             {
-                Margin = new Thickness (50, 2, 0, 0),
+                Margin = new Thickness(50, 2, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Width = 200
             };
@@ -214,12 +214,13 @@ namespace FirstApp
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Content = "Tillbaka",
                 Width = 100,
-                Margin = new Thickness(50, 10, 0, 0)
-                
+                Margin = new Thickness(50, 20, 0, 0)
+
             };
             orderPanel.Children.Add(backFromOrder);
             backFromOrder.Click += BackFromOrderClick;
-            //VARUKORGEN Texten högst upp ************************************************************
+
+            //VARUKORGEN Texten högst upp *********************************************************
             chart = new TextBlock //Detta är titeln som står högst upp "Varukorgen"
             {
                 FontSize = 20,
@@ -232,7 +233,7 @@ namespace FirstApp
             Grid.SetColumn(chart, 2);
             Grid.SetRow(chart, 0);
 
-            //STACK PANEL FÖR KNAPPARNA I PRODUKTLISTAN*****************************************************************************
+            //STACK PANEL FÖR KNAPPARNA I PRODUKTLISTAN********************************************
             addToChart = new StackPanel { Orientation = Orientation.Horizontal }; //Denna StackPanel är skapad för info och lägg till knapparna.
             grid.Children.Add(addToChart);
             Grid.SetRow(addToChart, 2);
@@ -256,7 +257,7 @@ namespace FirstApp
             addToChart.Children.Add(info);
             info.Click += ClickedInfo; //Visar information om den markerade produkten
 
-            //LISTA FÖR VARUKORGEN**************************************************************************************************
+            //LISTA FÖR VARUKORGEN*****************************************************************
             chartListBox = new ListBox //Listbox som ska visa upp de tillagda artiklarna i varukorgen.
             {
                 Background = Brushes.AliceBlue,
@@ -290,7 +291,6 @@ namespace FirstApp
                 Foreground = Brushes.ForestGreen,
                 Margin = new Thickness(0, 2, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
-                //Text = totalSum.ToString()
             };
             discountSum.Children.Add(totalSumInChart);
 
@@ -417,7 +417,7 @@ namespace FirstApp
             orderedProducts.Items.Clear();
             cartList.Clear();
             listProducts.Clear();
-            discountEnabled.Text = string.Empty; 
+            discountEnabled.Text = string.Empty;
 
             //Läser in listan på nytt eftersom listan rensats och vi vill hämta ursprungspriset igen (från csv-filen) efter att en rabattkod har matats in.
             string[] productArray = File.ReadAllLines("produktLista.csv");
@@ -440,6 +440,7 @@ namespace FirstApp
 
         private void ClickedOrder(object sender, RoutedEventArgs e)
         {
+
             //Byter ut texten i samtliga kolumner för rad 0.
             productList.Text = string.Empty;
             productDescritpion.Text = "Tack för din beställning";
@@ -457,12 +458,12 @@ namespace FirstApp
             secondButtonChart.Visibility = Visibility.Collapsed;
             chartListBox.Visibility = Visibility.Collapsed;
             discount.Visibility = Visibility.Collapsed;
-            discountSum.Visibility = Visibility.Collapsed;      
+            discountSum.Visibility = Visibility.Collapsed;
 
             //Visar den nya panelen i kolumn 2 (vid beställning)
             orderPanel.Visibility = Visibility.Visible;
 
-            discountEnabled.Foreground = Brushes.ForestGreen;
+            discountEnabled.Foreground = Brushes.Black;
             orderedProducts.Height = 350;
 
             orderSum.Text = "Summa: " + totalSum.ToString("C") + Environment.NewLine + discountEnabled.Text;
@@ -510,20 +511,21 @@ namespace FirstApp
                     {
                         x.Price -= x.Price * y.DiscountPercentage;
                     }
-                    totalSumInChart.Text = Math.Round(totalSum, 2).ToString("C");     
-                    discountEnabled.Text = "RABATT: " + (y.DiscountPercentage * 100) + "%";
-                }
+                    totalSumInChart.Text = Math.Round(totalSum, 2).ToString("C");
+                    discountEnabled.Text = "Rabatt: " + (y.DiscountPercentage * 100) + "%";
 
+                    foreach (Product x in cartList)
+                    {
+                        chartListBox.Items.Add(x.Title + " | " + x.Price.ToString("C"));
+                    }
+                }
                 else
                 {
                     discountBox.Background = Brushes.OrangeRed;
                 }
             }
 
-            foreach (Product x in cartList)
-            {
-                chartListBox.Items.Add(x.Title + " | " + x.Price.ToString("C"));
-            }
+           
         }
         private void ClickedEmptyAll(object sender, RoutedEventArgs e)
         {
@@ -560,8 +562,8 @@ namespace FirstApp
                         listProducts.Add(x);
                     }
 
-                        //Nollställer summan på totalsum.
-                        totalSum = 0;
+                    //Nollställer summan på totalsum.
+                    totalSum = 0;
                     totalSumInChart.Text = totalSum.ToString("C");
                     break;
 
@@ -597,7 +599,7 @@ namespace FirstApp
         private void ClickedAddToChart(object sender, RoutedEventArgs e)
         {
             try
-            {            
+            {
                 //Dokumentera om denna delen, att den var sjukt svår.
                 chartListBox.Items.Clear();
                 int selectedIndex = productListBox.SelectedIndex;
