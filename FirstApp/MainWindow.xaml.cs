@@ -105,8 +105,8 @@ namespace FirstApp
 
             //läser in produktlistan
             string[] productArray = File.ReadAllLines("produktLista.csv");
-            //Separerar alla ',' och lägger in de i diverse titel här nedan.
 
+            //Separerar alla ',' och lägger in de i diverse titel här nedan.
             foreach (string line in productArray)
             {
                 string[] columns = line.Split(',');
@@ -379,26 +379,49 @@ namespace FirstApp
             secondButtonChart.Children.Add(order);
             order.Click += ClickedOrder;
             //***************************************************************************************
+
+            //Läser in den sparade varukorgen, Det är det sista vi gör när vi startat programmet
+            string[] savedChart = File.ReadAllLines(@"C:\Windows\Temp\Varukorg.csv");
+
+            foreach (string line in savedChart)
+            {
+                string[] columns = line.Split(',');
+                string titleName = columns[0];
+                string productDescription = columns[1];
+                decimal price = decimal.Parse(columns[2].Replace('.', ','));
+                string pictures = columns[3];
+
+                Product x = new Product(titleName, productDescription, price, pictures);
+                cartList.Add(x);
+
+                chartListBox.Items.Add(x.Title + " | " + x.Price.ToString("C"));                   
+                totalSum += x.Price;
+                totalSumInChart.Text = totalSum.ToString("C");
+            }
         }
 
         private void ClickedSaveChart(object sender, RoutedEventArgs e)
         {
-            //before your loop
             var csv = new StringBuilder();
-
             foreach (Product x in cartList)
             {
-                //in your loop
+
                 var title = x.Title;
                 var description = x.Descprition;
-                var price = x.Price.ToString();
+                var price = x.Price;
                 var image = x.Image;
 
                 var newLine = string.Format("{0},{1},{2},{3}", title, description, price, image);
                 csv.AppendLine(newLine);
             }
-            //after your loop
-            File.WriteAllText(@"C:\Windows\Temp", csv.ToString());
+            File.WriteAllText(@"C:\Windows\Temp\Varukorg.csv", csv.ToString());
+
+            MessageBoxResult info = MessageBox.Show("Tack, din varukorg har nu sparats.", "Sparad varukorg", MessageBoxButton.OK, MessageBoxImage.Information);
+            switch (info)
+            {
+                case MessageBoxResult.OK:
+                    break;
+            }
         }
 
         private void BackFromOrderClick(object sender, RoutedEventArgs e)
@@ -530,7 +553,7 @@ namespace FirstApp
                     {
                         x.Price -= x.Price * y.DiscountPercentage;
                     }
-                    totalSumInChart.Text = Math.Round(totalSum, 2).ToString("C");
+                    totalSumInChart.Text = totalSum.ToString("C");
                     discountEnabled.Text = "Rabatt: " + (y.DiscountPercentage * 100) + "%";
 
                     foreach (Product x in cartList)
@@ -598,7 +621,7 @@ namespace FirstApp
                 //Dokumentera om denna delen, att den var sjukt svår.
                 Product p = cartList[foodIndex];
                 totalSum -= p.Price;
-                totalSumInChart.Text = Math.Round(totalSum, 2).ToString("C");
+                totalSumInChart.Text = totalSum.ToString("C");
                 //"C" Sätter currency baserat på valutan i ditt land. I mitt fall "kr"
 
                 cartList.RemoveAt(foodIndex);
@@ -630,7 +653,7 @@ namespace FirstApp
                 }
                 //För att visa priset av totalsumman i varukorgen!
                 totalSum += p.Price;
-                totalSumInChart.Text = Math.Round(totalSum, 2).ToString("C");
+                totalSumInChart.Text = totalSum.ToString("C");
             }
             catch
             {
