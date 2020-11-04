@@ -540,46 +540,45 @@ namespace FirstApp
             {
                 if (discountBox.Text == y.Code)
                 {
-                    MessageBoxResult info = MessageBox.Show("Notera att du inte kommer kunna spara din varukorg efter att du matat in en rabattkod. Du kan endast spara din varukorg med ordinarie priser. Men det går bra att hämta den sparade varukorgen för att därefter knappa in en rabattkod. Du kan även tömma varukorgen för att börja om från början.\nVill du fortsätta?", "Information!", MessageBoxButton.YesNo, MessageBoxImage.Information);
-                    switch (info)
+                    //MessageBoxResult info = MessageBox.Show("Notera att du inte kommer kunna spara din varukorg efter att du matat in en rabattkod. Du kan endast spara din varukorg med ordinarie priser. Men det går bra att hämta den sparade varukorgen för att därefter knappa in en rabattkod. Du kan även tömma varukorgen för att börja om från början.\nVill du fortsätta?", "Information!", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    //switch (info)
+                    //{
+                    //    case MessageBoxResult.Yes:
+
+                    //    case MessageBoxResult.No:
+                    //        break;
+                    //}
+
+                    //Tar bort save knappen så att användaren inte kan spara ett rabatterat pris.
+                    save.Visibility = Visibility.Hidden;
+
+                    discountBox.Background = Brushes.LightGreen;
+
+                    discountBox.Visibility = Visibility.Collapsed;
+                    addDiscount.Visibility = Visibility.Collapsed;
+                    discountEnabled.Visibility = Visibility.Visible;
+
+                    foreach (Product x in cartList)
                     {
-                        case MessageBoxResult.Yes:
-
-                            //Vi tar bort save knappen så att användaren inte kan spara ett rabatterat pris efter att man knapap.
-                            save.Visibility = Visibility.Hidden;
-
-                            discountBox.Background = Brushes.LightGreen;
-
-                            discountBox.Visibility = Visibility.Collapsed;
-                            addDiscount.Visibility = Visibility.Collapsed;
-                            discountEnabled.Visibility = Visibility.Visible;
-
-                            foreach (Product x in cartList)
-                            {
-                                chartListBox.Items.Clear();
-                                totalSum -= x.Price * y.DiscountPercentage;
-                            }
-
-                            foreach (Product x in listProducts)
-                            {
-                                x.Price -= x.Price * y.DiscountPercentage;
-                            }
-                            totalSumInChart.Text = totalSum.ToString("C");
-                            discountEnabled.Text = "Rabatt: " + (y.DiscountPercentage * 100) + "%";
-
-                            foreach (Product x in cartList)
-                            {
-                                x.Price -= x.Price * y.DiscountPercentage;
-                                chartListBox.Items.Add(x.Title + " | " + x.Price.ToString("C"));
-                            }
-                            break;
-
-                        case MessageBoxResult.No:
-                            break;
+                        chartListBox.Items.Clear();
+                        totalSum -= x.Price * y.DiscountPercentage;
                     }
-                }
 
-                else
+                    foreach (Product x in listProducts)
+                    {
+                        x.Price -= (x.Price * y.DiscountPercentage);
+                    }
+                    totalSumInChart.Text = totalSum.ToString("C");
+                    discountEnabled.Text = "Rabatt: " + (y.DiscountPercentage * 100) + "%";
+
+                    foreach (Product x in cartList)
+                    {
+                        x.Price -= x.Price * y.DiscountPercentage;
+                        chartListBox.Items.Add(x.Title + " | " + x.Price.ToString("C"));
+                    }
+                    break;
+                }
+                else if (discountBox.Text != y.Code)
                 {
                     discountBox.Background = Brushes.OrangeRed;
                 }
