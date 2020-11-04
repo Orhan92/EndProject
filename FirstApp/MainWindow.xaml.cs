@@ -388,30 +388,28 @@ namespace FirstApp
                 string[] columns = line.Split(',');
                 string titleName = columns[0];
                 string productDescription = columns[1];
-                decimal price = decimal.Parse(columns[2].Replace('.', ','));
+                decimal price = decimal.Parse(columns[2].Replace('.',','));
                 string pictures = columns[3];
 
                 Product x = new Product(titleName, productDescription, price, pictures);
                 cartList.Add(x);
 
-                chartListBox.Items.Add(x.Title + " | " + x.Price.ToString("C"));                   
+                chartListBox.Items.Add(x.Title + " | " + x.Price.ToString("C"));
                 totalSum += x.Price;
                 totalSumInChart.Text = totalSum.ToString("C");
             }
         }
-
         private void ClickedSaveChart(object sender, RoutedEventArgs e)
         {
             var csv = new StringBuilder();
             foreach (Product x in cartList)
             {
-
                 var title = x.Title;
                 var description = x.Descprition;
                 var price = x.Price;
                 var image = x.Image;
 
-                var newLine = string.Format("{0},{1},{2},{3}", title, description, price, image);
+                var newLine = string.Format("{0},{1},{2},{3}", title, description, price.ToString().Replace(',','.'), image);
                 csv.AppendLine(newLine);
             }
             File.WriteAllText(@"C:\Windows\Temp\Varukorg.csv", csv.ToString());
