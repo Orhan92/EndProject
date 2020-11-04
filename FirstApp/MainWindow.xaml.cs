@@ -354,6 +354,7 @@ namespace FirstApp
                 Margin = new Thickness(0, 2, 0, 0)
             };
             buttonChart.Children.Add(save);
+            save.Click += ClickedSaveChart;
 
             secondButtonChart = new StackPanel { Orientation = Orientation.Horizontal }; // skapad för att lägga till knapparna under varukorgen
             grid.Children.Add(secondButtonChart);
@@ -369,7 +370,7 @@ namespace FirstApp
             secondButtonChart.Children.Add(empty);
             empty.Click += ClickedEmptyAll;
 
-            order = new Button //Beställ knappen som ska leda till att användaren får en "Tack förbeställningen"-ruta med detaljer för beställningen
+            order = new Button //Beställ knappen som ska leda till att användaren får en "Tack för beställningen"-ruta med detaljer för beställningen
             {
                 Content = "Beställ",
                 Width = 100,
@@ -377,7 +378,27 @@ namespace FirstApp
             };
             secondButtonChart.Children.Add(order);
             order.Click += ClickedOrder;
-            //***********************************************************************************************
+            //***************************************************************************************
+        }
+
+        private void ClickedSaveChart(object sender, RoutedEventArgs e)
+        {
+            //before your loop
+            var csv = new StringBuilder();
+
+            foreach (Product x in cartList)
+            {
+                //in your loop
+                var title = x.Title;
+                var description = x.Descprition;
+                var price = x.Price.ToString();
+                var image = x.Image;
+
+                var newLine = string.Format("{0},{1},{2},{3}", title, description, price, image);
+                csv.AppendLine(newLine);
+            }
+            //after your loop
+            File.WriteAllText(@"C:\Windows\Temp", csv.ToString());
         }
 
         private void BackFromOrderClick(object sender, RoutedEventArgs e)
@@ -437,7 +458,6 @@ namespace FirstApp
             totalSum = 0;
             totalSumInChart.Text = totalSum.ToString("C");
         }
-
         private void ClickedOrder(object sender, RoutedEventArgs e)
         {
 
@@ -473,7 +493,6 @@ namespace FirstApp
                 orderedProducts.Items.Add(x.Title + " | " + x.Price.ToString("C"));
             }
         }
-
         private void AddDiscount(object sender, RoutedEventArgs e)
         {
             //Dokumentera om denna delen.. Den var sjukt jobbig att få till.
@@ -523,7 +542,7 @@ namespace FirstApp
                 {
                     discountBox.Background = Brushes.OrangeRed;
                 }
-            }         
+            }
         }
         private void ClickedEmptyAll(object sender, RoutedEventArgs e)
         {
