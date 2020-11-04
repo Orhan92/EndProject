@@ -380,18 +380,22 @@ namespace FirstApp
             order.Click += ClickedOrder;
             //***************************************************************************************
 
-            //Läser in den sparade varukorgen, Det är det sista vi gör när vi startat programmet
-            string[] savedChart = File.ReadAllLines(@"C:\Windows\Temp\Varukorg.csv");
+            //Denna för att skapa filen "savedChart.csv som vi kan läsa från i foreach i raid 389"
+            File.AppendAllText(@"C:\Windows\Temp\savedChart.csv", string.Empty);
+
+            //Läser in den sparade varukorgen, Det är det sista vi gör när vi startat programmet i Main.
+            string[] savedChart = File.ReadAllLines(@"C:\Windows\Temp\savedChart.csv");
 
             foreach (string line in savedChart)
             {
                 string[] columns = line.Split(',');
                 string titleName = columns[0];
                 string productDescription = columns[1];
-                decimal price = decimal.Parse(columns[2].Replace('.',','));
+                decimal price = decimal.Parse(columns[2].Replace('.', ','));
                 string pictures = columns[3];
 
                 Product x = new Product(titleName, productDescription, price, pictures);
+
                 cartList.Add(x);
 
                 chartListBox.Items.Add(x.Title + " | " + x.Price.ToString("C"));
@@ -409,10 +413,10 @@ namespace FirstApp
                 var price = x.Price;
                 var image = x.Image;
 
-                var newLine = string.Format("{0},{1},{2},{3}", title, description, price.ToString().Replace(',','.'), image);
+                var newLine = string.Format("{0},{1},{2},{3}", title, description, price.ToString().Replace(',', '.'), image);
                 csv.AppendLine(newLine);
             }
-            File.WriteAllText(@"C:\Windows\Temp\Varukorg.csv", csv.ToString());
+            File.WriteAllText(@"C:\Windows\Temp\savedChart.csv", csv.ToString());
 
             MessageBoxResult info = MessageBox.Show("Tack, din varukorg har nu sparats.", "Sparad varukorg", MessageBoxButton.OK, MessageBoxImage.Information);
             switch (info)
@@ -421,7 +425,6 @@ namespace FirstApp
                     break;
             }
         }
-
         private void BackFromOrderClick(object sender, RoutedEventArgs e)
         {
             //Visar ursprunget i Kolumn 0
@@ -481,6 +484,7 @@ namespace FirstApp
         }
         private void ClickedOrder(object sender, RoutedEventArgs e)
         {
+            save.Visibility = Visibility.Visible;
 
             //Byter ut texten i samtliga kolumner för rad 0.
             productList.Text = string.Empty;
@@ -518,6 +522,7 @@ namespace FirstApp
         {
             //Dokumentera om denna delen.. Den var sjukt jobbig att få till.
             discountList.Clear();
+
             //Gör så att det inte spelar någon roll om användaren knappar in stora eller små bokstäver.
             discountBox.Text = discountBox.Text.ToUpper();
             string[] discountArray = File.ReadAllLines("rabattKoder.csv");
@@ -535,30 +540,45 @@ namespace FirstApp
             {
                 if (discountBox.Text == y.Code)
                 {
-                    discountBox.Background = Brushes.LightGreen;
-
-                    discountBox.Visibility = Visibility.Collapsed;
-                    addDiscount.Visibility = Visibility.Collapsed;
-                    discountEnabled.Visibility = Visibility.Visible;
-
-                    foreach (Product x in cartList)
+                    MessageBoxResult info = MessageBox.Show("Notera att du inte kommer kunna spara din varukorg efter att du matat in en rabattkod. Du kan endast spara din varukorg med ordinarie priser. Men det går bra att hämta den sparade varukorgen för att därefter knappa in en rabattkod. Du kan även tömma varukorgen för att börja om från början.\nVill du fortsätta?", "Information!", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    switch (info)
                     {
-                        chartListBox.Items.Clear();
-                        totalSum -= x.Price * y.DiscountPercentage;
-                    }
+                        case MessageBoxResult.Yes:
 
-                    foreach (Product x in listProducts)
-                    {
-                        x.Price -= x.Price * y.DiscountPercentage;
-                    }
-                    totalSumInChart.Text = totalSum.ToString("C");
-                    discountEnabled.Text = "Rabatt: " + (y.DiscountPercentage * 100) + "%";
+                            //Vi tar bort save knappen så att användaren inte kan spara ett rabatterat pris efter att man knapap.
+                            save.Visibility = Visibility.Hidden;
 
-                    foreach (Product x in cartList)
-                    {
-                        chartListBox.Items.Add(x.Title + " | " + x.Price.ToString("C"));
+                            discountBox.Background = Brushes.LightGreen;
+
+                            discountBox.Visibility = Visibility.Collapsed;
+                            addDiscount.Visibility = Visibility.Collapsed;
+                            discountEnabled.Visibility = Visibility.Visible;
+
+                            foreach (Product x in cartList)
+                            {
+                                chartListBox.Items.Clear();
+                                totalSum -= x.Price * y.DiscountPercentage;
+                            }
+
+                            foreach (Product x in listProducts)
+                            {
+                                x.Price -= x.Price * y.DiscountPercentage;
+                            }
+                            totalSumInChart.Text = totalSum.ToString("C");
+                            discountEnabled.Text = "Rabatt: " + (y.DiscountPercentage * 100) + "%";
+
+                            foreach (Product x in cartList)
+                            {
+                                x.Price -= x.Price * y.DiscountPercentage;
+                                chartListBox.Items.Add(x.Title + " | " + x.Price.ToString("C"));
+                            }
+                            break;
+
+                        case MessageBoxResult.No:
+                            break;
                     }
                 }
+
                 else
                 {
                     discountBox.Background = Brushes.OrangeRed;
@@ -572,6 +592,7 @@ namespace FirstApp
             {
                 case MessageBoxResult.Yes:
 
+                    save.Visibility = Visibility.Visible;
                     discountBox.Visibility = Visibility.Visible;
                     addDiscount.Visibility = Visibility.Visible;
                     discountEnabled.Visibility = Visibility.Collapsed; //Så att den inte tar någon plats alls i main griden.
@@ -585,6 +606,7 @@ namespace FirstApp
                     chartListBox.Items.Clear();
                     cartList.Clear();
                     listProducts.Clear();
+                    discountList.Clear();
 
                     //Läser in listan på nytt eftersom listan rensats och vi vill hämta ursprungspriset igen (från csv-filen) efter att en rabattkod har matats in.
                     string[] productArray = File.ReadAllLines("produktLista.csv");
