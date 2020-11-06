@@ -95,30 +95,12 @@ namespace FirstApp
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.Visibility = Visibility.Visible;
 
-            //***********************************************************************************b
+            //LISTOR***********************************************************************************
 
             listProducts = new List<Product>(); //lägger in samtliga objekt ur csv filen hit.
             discountList = new List<Discount>(); //lägger in samtliga rabattkoder här.
             cartList = new List<Product>();  //Dokumentera om denna delen, att det var svårt att förstå att jag behövde lägga in saker från listProducts in i en ny lista (den här listan) för att kunna manipulera den i chartListBox.
-
-            //läser in produktlistan
-            string[] productArray = File.ReadAllLines("produktLista.csv");
-
-            //Separerar alla ',' och lägger in de i diverse titel här nedan.
-            foreach (string line in productArray)
-            {
-                string[] columns = line.Split(',');
-                string titleName = columns[0];
-                string descriptionProduct = columns[1];
-                decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
-                string pictures = columns[3];
-
-                //För varje rad i csv filen skapar vi ett nytt objekt (x) av klassen.
-                Product productList = new Product(titleName, descriptionProduct, productPrice, pictures);
-                //Lägger till objektet i en lista (titelnamn, beskrivning och pris)
-                listProducts.Add(productList);
-            }
-
+  
             // FÖRSTA KOLUMNEN 0 GRIDDEN********************************************************
             productList = new TextBlock //Detta är titeln som står högst upp "Produktlista"
             {
@@ -144,6 +126,24 @@ namespace FirstApp
             Grid.SetColumn(productListBox, 0);
             Grid.SetRow(productListBox, 1);
             //lägger in titeln och priset för varje objekt av Product klassen utifrån csv fil in i en produktlistan som visas i vänster kolumn för användaren.
+
+            //läser in produktlistan
+            string[] productArray = File.ReadAllLines("produktLista.csv");
+
+            //Separerar alla ',' och lägger in de i diverse titel.
+            foreach (string line in productArray)
+            {
+                string[] columns = line.Split(',');
+                string titleName = columns[0];
+                string descriptionProduct = columns[1];
+                decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
+                string pictures = columns[3];
+
+                //För varje rad i csv filen skapar vi ett nytt objekt (x) av klassen.
+                Product productList = new Product(titleName, descriptionProduct, productPrice, pictures);
+                //Lägger till objektet i en lista (titelnamn, beskrivning och pris)
+                listProducts.Add(productList);
+            }
             foreach (Product p in listProducts)
             {
                 productListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
@@ -202,10 +202,12 @@ namespace FirstApp
             orderPanel.Children.Add(orderedProducts);
 
             orderSum = new TextBlock
-            {
-                Margin = new Thickness(50, 2, 0, 15),
+            {   
+                Text = "Summa: ",
+                Margin = new Thickness(50, 5, 0, 15),
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Width = 200
+                Width = 200,
+                Height = 30
             };
             orderPanel.Children.Add(orderSum);
 
@@ -297,7 +299,7 @@ namespace FirstApp
             {
                 Content = "Lägg till",
                 Width = 50,
-                Margin = new Thickness(50, 20, 2, 0)
+                Margin = new Thickness(50, 10, 2, 0)
             };
             discount.Children.Add(addDiscount);
             addDiscount.Click += AddDiscount;
@@ -309,7 +311,7 @@ namespace FirstApp
                 Text = "Rabattkod",
                 Width = 148,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(0, 20, 0, 0)
+                Margin = new Thickness(0, 10, 0, 0)
             };
             discount.Children.Add(discountBox);
             discountBox.GotFocus += DiscountBoxHasBeenClicked;
@@ -545,16 +547,21 @@ namespace FirstApp
                     addDiscount.Visibility = Visibility.Hidden;
 
                     orderedProducts.Items.Clear();
-                    //orderedProducts.Items.Clear();
-                    
                     foreach (Product x in cartList)
                     {
-                        totalSum -= x.Price * y.DiscountPercentage;
                         orderedProducts.Items.Add(x.Title + " | " + x.Price.ToString("C"));
+                        totalSum -= x.Price * y.DiscountPercentage;
                     }
-                    orderSum.Text = "Summa: " + totalSum.ToString("C") + " | " + "Rabatt: " + (y.DiscountPercentage * 100) + "%";
+
+                    //Skapar denna foreach med ordinaryPrice endast för att kunna skriva ut tidigare ord.pris
+                    decimal ordinaryPrice = 0;
+                    foreach (Product x in cartList)
+                    {
+                        ordinaryPrice += x.Price;
+                        orderSum.Text = "Summa: " + ordinaryPrice.ToString("C") + " | Ordinarie pris" + Environment.NewLine + "Summa: " + totalSum.ToString("C") + " | " + "Rabatt: " + (y.DiscountPercentage * 100) + "%";
+                    }
                 }
-                else if (discountBox.Text != y.Code)
+                else
                 {
                     discountBox.Background = Brushes.OrangeRed;
                 }
