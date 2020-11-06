@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lektion18GUIhändelser", "Lektion18GUIhändelser\Lektion18GUIhändelser.csproj", "{35E4F0D3-6D32-47B9-851F-44B8E6A9441B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstApp", "FirstApp\FirstApp.csproj", "{A97C56D8-3FA0-407C-BE5D-CC5E58EB32DA}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{35E4F0D3-6D32-47B9-851F-44B8E6A9441B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35E4F0D3-6D32-47B9-851F-44B8E6A9441B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35E4F0D3-6D32-47B9-851F-44B8E6A9441B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35E4F0D3-6D32-47B9-851F-44B8E6A9441B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A97C56D8-3FA0-407C-BE5D-CC5E58EB32DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A97C56D8-3FA0-407C-BE5D-CC5E58EB32DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A97C56D8-3FA0-407C-BE5D-CC5E58EB32DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
