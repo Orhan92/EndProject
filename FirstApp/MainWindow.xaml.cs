@@ -1,23 +1,11 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Printing;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 
 namespace FirstApp
@@ -93,13 +81,12 @@ namespace FirstApp
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(300) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            grid.Visibility = Visibility.Visible;
 
             //LISTOR***********************************************************************************
             listProducts = new List<Product>(); //lägger in samtliga objekt ur csv filen hit.
             discountList = new List<Discount>(); //lägger in samtliga rabattkoder här.
             cartList = new List<Product>();  //Dokumentera om denna delen, att det var svårt att förstå att jag behövde lägga in saker från listProducts in i en ny lista (den här listan) för att kunna manipulera den i chartListBox.
-  
+
 
 
             //KOLUMN 0**************************************************************************************
@@ -229,7 +216,7 @@ namespace FirstApp
 
             //Summan vid order
             orderSum = new TextBlock
-            {   
+            {
                 Text = "Summa: ",
                 Margin = new Thickness(50, 5, 0, 15),
                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -405,130 +392,10 @@ namespace FirstApp
                 totalSumInChart.Text = totalSum.ToString("C");
             }
         }
-        private void ClickedSaveChart(object sender, RoutedEventArgs e)
-        {
-            //Sparar varukorgen när användaren trycker på "Spara"
-            var csv = new StringBuilder();
-            foreach (Product p in cartList)
-            {
-                var title = p.Title;
-                var description = p.Descprition;
-                var price = p.Price;
-                var image = p.Image;
-
-                var newLine = string.Format("{0},{1},{2},{3}", title, description, price.ToString().Replace(',', '.'), image);
-                csv.AppendLine(newLine);
-            }
-            File.WriteAllText(@"C:\Windows\Temp\savedChart.csv", csv.ToString());
-
-            MessageBoxResult info = MessageBox.Show("Tack, din varukorg har nu sparats.", "Sparad varukorg", MessageBoxButton.OK, MessageBoxImage.Information);
-            switch (info)
-            {
-                case MessageBoxResult.OK:
-                    break;
-            }
-        }
-        private void BackFromOrderClick(object sender, RoutedEventArgs e)
-        {
-            //Visar ursprunget i Kolumn 0
-            productListBox.Visibility = Visibility.Visible;
-            addToChart.Visibility = Visibility.Visible;
-
-            //Visar Ursprunget i Kolumn 1
-            DescBox.Visibility = Visibility.Visible;
-            backFromOrder.Visibility = Visibility.Collapsed;
-
-            //Visar ursprunget i hela kolumn 2.
-            buttonChart.Visibility = Visibility.Visible;
-            secondButtonChart.Visibility = Visibility.Visible;
-            chartListBox.Visibility = Visibility.Visible;
-            discount.Visibility = Visibility.Collapsed;
-            discountSum.Visibility = Visibility.Visible;
-
-            //Visar den nya panelen i kolumn 2 (vid beställning)
-            orderPanel.Visibility = Visibility.Collapsed;
-
-            save.Visibility = Visibility.Visible;
-            discountBox.Visibility = Visibility.Visible;
-            addDiscount.Visibility = Visibility.Visible;
-
-            //"Nollställer även bild och beskrivning
-            image.Visibility = Visibility.Hidden;
-            descriptionBox.Visibility = Visibility.Hidden;
-
-            //Återställer namnen på rubrikerna till ursprungstitel.
-            productList.Text = "Produktlista";
-            productDescritpion.Text = "Produktbeskrivning";
-            chart.Text = "Varukorgen";
-
-            //Nollställer rabattexten som användaren får knappa in till sitt urpsrungstillstånd
-            discountBox.Foreground = Brushes.Gray;
-            discountBox.Background = Brushes.LightGoldenrodYellow;
-            discountBox.Text = "Rabattkod";
-
-            //Tömmer/Rensar väsentliga listor och ListBox (som visas för användaren).
-            chartListBox.Items.Clear();
-            orderedProducts.Items.Clear();
-            cartList.Clear();
-            listProducts.Clear();
-
-            //Läser in listan på nytt eftersom listan rensats och vi vill hämta ursprungspriset igen (från csv-filen: produktLista) efter att en rabattkod har matats in.
-            string[] productArray = File.ReadAllLines("produktLista.csv");
-            foreach (string line in productArray)
-            {
-                string[] columns = line.Split(',');
-                string titleName = columns[0];
-                string descriptionProduct = columns[1];
-                decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
-                string pictures = columns[3];
-
-                Product product = new Product(titleName, descriptionProduct, productPrice, pictures);
-                listProducts.Add(product);
-            }
-
-            //Nollställer summan på totalsum.
-            totalSum = 0;
-            totalSumInChart.Text = totalSum.ToString("C");
-        }
-        private void ClickedOrder(object sender, RoutedEventArgs e)
-        {
-            save.Visibility = Visibility.Visible;
-            backFromOrder.Visibility = Visibility.Visible;
-            //Byter ut texten i samtliga kolumner för rad 0.
-            productList.Text = string.Empty;
-            productDescritpion.Text = "Tack för din beställning";
-            chart.Text = string.Empty;
-
-            //Gömmer allt i kolumn 0.
-            productListBox.Visibility = Visibility.Collapsed;
-            addToChart.Visibility = Visibility.Collapsed;
-
-            //Gömmer kolumn 1.
-            DescBox.Visibility = Visibility.Collapsed;
-
-            //Gömmer hela kolumn 2.
-            buttonChart.Visibility = Visibility.Collapsed;
-            secondButtonChart.Visibility = Visibility.Collapsed;
-            chartListBox.Visibility = Visibility.Collapsed;
-            discountSum.Visibility = Visibility.Collapsed;
-
-            //Visar den nya panelen i kolumn 2 (vid beställning)
-            orderPanel.Visibility = Visibility.Visible;
-            discount.Visibility = Visibility.Visible;
-
-            //discountEnabled.Foreground = Brushes.Black; //Kolla upp denna också
-            orderedProducts.Height = 350;
-
-            orderSum.Text = "Summa: " + totalSum.ToString("C");
-
-            foreach (Product p in cartList)
-            {
-                orderedProducts.Items.Add(p.Title + " | " + p.Price.ToString("C"));
-            }
-        }
         private void AddDiscount(object sender, RoutedEventArgs e)
         {
             //Dokumentera om denna delen.. Den var sjukt jobbig att få till.
+            //Rensar rabattlistan och läser in den på nytt här nedan.
             discountList.Clear();
 
             //Gör så att det inte spelar någon roll om användaren knappar in stora eller små bokstäver.
@@ -552,16 +419,14 @@ namespace FirstApp
                     addDiscount.Visibility = Visibility.Hidden;
 
                     orderedProducts.Items.Clear();
+
+                    //deklarerar och initierar ordinaryPrice endast för att kunna skriva ut tidigare ord.pris för användaren.
+                    decimal ordinaryPrice = 0;
                     foreach (Product x in cartList)
                     {
                         orderedProducts.Items.Add(x.Title + " | " + x.Price.ToString("C"));
                         totalSum -= x.Price * y.DiscountPercentage;
-                    }
 
-                    //Skapar denna foreach med ordinaryPrice endast för att kunna skriva ut tidigare ord.pris
-                    decimal ordinaryPrice = 0;
-                    foreach (Product x in cartList)
-                    {
                         ordinaryPrice += x.Price;
                         orderSum.Text = "Summa: " + ordinaryPrice.ToString("C") + " | Ordinarie pris" + Environment.NewLine + "Summa: " + totalSum.ToString("C") + " | " + "Rabatt: " + (y.DiscountPercentage * 100) + "%";
                     }
@@ -572,45 +437,122 @@ namespace FirstApp
                 }
             }
         }
+        private void DiscountBoxHasBeenClicked(object sender, RoutedEventArgs e)
+        {
+            //Denna metod gör så att TextBoxen där det står "Rabattkod" blir tom när man klickar på den.
+            bool hasBeenClicked = false;
+            if (!hasBeenClicked)
+            {
+                discountBox = sender as TextBox;
+                discountBox.Foreground = Brushes.Black;
+                discountBox.Background = Brushes.White;
+                discountBox.Text = String.Empty;
+                hasBeenClicked = true;
+            }
+        }
+        private void BackFromOrderClick(object sender, RoutedEventArgs e)
+        {
+            //Kolumn 0: Gör hela Visible,
+            productList.Visibility = Visibility.Visible;
+            productListBox.Visibility = Visibility.Visible;
+            addToChart.Visibility = Visibility.Visible;
+
+            //Kolumn 1: Visar "ursprungliga" kolumnen (den som visas vid programmets start)
+            DescBox.Visibility = Visibility.Visible;
+            productDescritpion.Visibility = Visibility.Visible;
+            image.Visibility = Visibility.Hidden; //Håller den Hidden till dess att användaren klickar på "Visa Info"
+            descriptionBox.Visibility = Visibility.Hidden; //Håller den Hidden till dess att användaren klickar på "Visa Info"
+
+            //Kolumn 1: Collapsar/Döljer det som visas när användaren klickar på "Beställ"
+            orderPanel.Visibility = Visibility.Collapsed;
+            discount.Visibility = Visibility.Collapsed;
+            backFromOrder.Visibility = Visibility.Collapsed;
+
+            //Kolumn 2: Gör hela kolumnen Visible igen.
+            chart.Visibility = Visibility.Visible;
+            chartListBox.Visibility = Visibility.Visible;
+            discountSum.Visibility = Visibility.Visible;
+            buttonChart.Visibility = Visibility.Visible;
+            secondButtonChart.Visibility = Visibility.Visible;
+
+            //Återställer namnen på rubrikerna till ursprungstitel.
+            productList.Text = "Produktlista";
+            productDescritpion.Text = "Produktbeskrivning";
+            chart.Text = "Varukorgen";
+
+            //Nollställer rabattexten som användaren får knappa in till sitt urpsrungstillstånd.
+            discountBox.Foreground = Brushes.Gray;
+            discountBox.Background = Brushes.LightGoldenrodYellow;
+            discountBox.Text = "Rabattkod";
+
+            //Tömmer/Rensar väsentliga listor och ListBox (som visas för användaren).
+            chartListBox.Items.Clear();
+            orderedProducts.Items.Clear();
+            cartList.Clear();
+            discountList.Clear();
+
+            //Nollställer summan på totalsum.
+            totalSum = 0;
+            totalSumInChart.Text = totalSum.ToString("C");
+        }
+        private void ClickedOrder(object sender, RoutedEventArgs e)
+        {
+            //Kolumn 0: Vi vill Collapsa/Dölja denna när användaren trycker på "Beställ"
+            //Notera att titeln/rubriken inte är Collapsed då vi gör strängen empty. (Rad: 487)
+            productListBox.Visibility = Visibility.Collapsed;
+            addToChart.Visibility = Visibility.Collapsed;
+
+            //Kolumn 1: Vi gömmer det som visas i denna kolumnen vid programmets start och uppdaterar med ny information.
+            //Notera att titeln/rubriken inte är Collapsed då vi ändrar på strängens innehåll (Rad: 488)
+            DescBox.Visibility = Visibility.Collapsed;
+            image.Visibility = Visibility.Collapsed;
+
+            //Kolumn 1: Uppdaterad information när användaren klickat på "Beställ"
+            orderPanel.Visibility = Visibility.Visible;
+            discount.Visibility = Visibility.Visible;
+            save.Visibility = Visibility.Visible; //Denna rad visas inte trots att 'discount' (rad 477) är Visible och stackPanel. 
+            discountBox.Visibility = Visibility.Visible; //Denna rad visas inte trots att 'discount' (rad 477) är Visible och stackPanel.
+            addDiscount.Visibility = Visibility.Visible; //Denna rad visas inte trots att 'discount' (rad 477) är Visible och stackPanel.
+            backFromOrder.Visibility = Visibility.Visible;
+
+            //Kolumn 2: Collapsar/Döljer även denna vid beställning.
+            //Notera att titeln/rubriken inte är collapsed då vi gör strängen empty (Rad: 489)
+            chartListBox.Visibility = Visibility.Collapsed;
+            discountSum.Visibility = Visibility.Collapsed;
+            buttonChart.Visibility = Visibility.Collapsed;
+            secondButtonChart.Visibility = Visibility.Collapsed;
+
+            //Byter ut texten i samtliga kolumner för rad 0.
+            productList.Text = string.Empty;
+            productDescritpion.Text = "Tack för din beställning";
+            chart.Text = string.Empty;
+
+            //Sätter en specifik höjd på beställningslistan.
+            orderedProducts.Height = 350;
+
+            //Skriver ut totalsumman för beställningen.
+            orderSum.Text = "Summa: " + totalSum.ToString("C");
+
+            //Lägger till alla beställda produkter ur cartList in i orderedProducts ListBox.
+            foreach (Product p in cartList)
+            {
+                orderedProducts.Items.Add(p.Title + " | " + p.Price.ToString("C"));
+            }
+        }
         private void ClickedEmptyAll(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult warning = MessageBox.Show("Är du säker att du vill tömma varukorgen? Även rabattkod kommer att återställas. Du kommer behöva knappa in din rabattkod på nytt.", "Varning!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+            MessageBoxResult warning = MessageBox.Show("Är du säker att du vill tömma varukorgen?", "Varning!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
             switch (warning)
             {
                 case MessageBoxResult.Yes:
 
-                    save.Visibility = Visibility.Visible;
-                    discountBox.Visibility = Visibility.Visible;
-                    addDiscount.Visibility = Visibility.Visible;
-
-                    //"nollställer även bild i kolumn 1 och beskrivning.
+                    //"nollställer" bild i kolumn 1 och beskrivning.
                     image.Visibility = Visibility.Hidden;
                     descriptionBox.Visibility = Visibility.Hidden;
 
-                    //Nollställer rabattexten som användaren får knappa in till sitt urpsrungstillstånd
-                    discountBox.Foreground = Brushes.Gray;
-                    discountBox.Background = Brushes.LightGoldenrodYellow;
-                    discountBox.Text = "Rabattkod";
-
-                    //Rensar listor, och listboxen som visar upp tillagda artiklar i listboxen.
+                    //Rensar varukorgslistan, boxen som visar valda artiklar och rabattkoden som lagt till tidigare.
                     chartListBox.Items.Clear();
                     cartList.Clear();
-                    listProducts.Clear();
-                    discountList.Clear();
-
-                    //Läser in listan på nytt eftersom listan rensats och vi vill hämta ursprungspriset igen (från csv-filen) efter att en rabattkod har matats in.
-                    string[] productArray = File.ReadAllLines("produktLista.csv");
-                    foreach (string line in productArray)
-                    {
-                        string[] columns = line.Split(',');
-                        string titleName = columns[0];
-                        string descriptionProduct = columns[1];
-                        decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
-                        string pictures = columns[3];
-
-                        Product product = new Product(titleName, descriptionProduct, productPrice, pictures);
-                        listProducts.Add(product);
-                    }
 
                     //Nollställer summan på totalsum.
                     totalSum = 0;
@@ -646,18 +588,41 @@ namespace FirstApp
                 }
             }
         }
+        private void ClickedSaveChart(object sender, RoutedEventArgs e)
+        {
+            //Sparar varukorgen när användaren trycker på "Spara"
+            var csv = new StringBuilder();
+            foreach (Product p in cartList)
+            {
+                var title = p.Title;
+                var description = p.Descprition;
+                var price = p.Price;
+                var image = p.Image;
+
+                var newLine = string.Format("{0},{1},{2},{3}", title, description, price.ToString().Replace(',', '.'), image);
+                csv.AppendLine(newLine);
+            }
+            File.WriteAllText(@"C:\Windows\Temp\savedChart.csv", csv.ToString());
+
+            MessageBoxResult info = MessageBox.Show("Tack, din varukorg har nu sparats.", "Sparad varukorg", MessageBoxButton.OK, MessageBoxImage.Information);
+            switch (info)
+            {
+                case MessageBoxResult.OK:
+                    break;
+            }
+        }
         private void ClickedAddToChart(object sender, RoutedEventArgs e)
         {
             try
             {
-                //Nollställer bild och beskrivning
+                //Nollställer bild och beskrivning så att användaren får klicka på "Visa info" igen.
                 image.Visibility = Visibility.Hidden;
                 descriptionBox.Visibility = Visibility.Hidden;
 
                 //Dokumentera om denna delen, att den var sjukt svår.
                 chartListBox.Items.Clear();
                 int selectedIndex = productListBox.SelectedIndex;
-                //cartList.Add(listProducts[selectedIndex]);
+
                 Product product = listProducts[selectedIndex];
                 cartList.Add(product);
 
@@ -675,6 +640,12 @@ namespace FirstApp
                 switch (info)
                 {
                     case MessageBoxResult.OK:
+
+                        //Loopen fungerar som en slags "felhantring". Ifall användaren inte markerat en produkt som ska läggas till så kommer det upp en informationsruta och sedan visas de redan tillagda produkterna igen. Utan loopen blir varukorgen tom.
+                        foreach (Product p in cartList)
+                        {
+                            chartListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
+                        }
                         break;
                 }
             }
@@ -700,19 +671,6 @@ namespace FirstApp
                     case MessageBoxResult.OK:
                         break;
                 }
-            }
-        }
-        private void DiscountBoxHasBeenClicked(object sender, RoutedEventArgs e)
-        {
-            //Denna metod gör så att TextBoxen där det står "Rabattkod" blir tom när man klickar på den.
-            bool hasBeenClicked = false;
-            if (!hasBeenClicked)
-            {
-                discountBox = sender as TextBox;
-                discountBox.Foreground = Brushes.Black;
-                discountBox.Background = Brushes.White;
-                discountBox.Text = String.Empty;
-                hasBeenClicked = true;
             }
         }
         private Image CreateImage(string filePath)
