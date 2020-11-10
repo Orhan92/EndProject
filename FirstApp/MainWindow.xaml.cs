@@ -13,13 +13,13 @@ namespace FirstApp
     public class Product
     {
         public string Title;
-        public string Descprition;
+        public string Description;
         public decimal Price;
         public string Image;
         public Product(string title, string description, decimal price, string pictures)
         {
             Title = title;
-            Descprition = description;
+            Description = description;
             Price = price;
             Image = pictures;
         }
@@ -347,7 +347,8 @@ namespace FirstApp
             ReadSavedChart();
         }
 
-        //Skapar en metod för inläsning av sparad varukorg, för att enkelt kunna testa den här delen i programmet.
+        //Skapar dessa "Read"-metoder för att enkelt kunna testa dem.
+        //Skapar en metod för inläsning av sparad varukorg (csv-fil).
         private void ReadSavedChart()
         {
             //Denna för att skapa filen "savedChart.csv" i temp mappen. Skapar en tom csv fil med namnet savedChart.csv. 
@@ -376,7 +377,7 @@ namespace FirstApp
                 chartSumLabel.Text = totalSum.ToString("C");
             }
         }
-        //Skapar metod för inläsning av produktlistan (csv-filen).
+        //Skapar metod för inläsning av produktlistan (csv-fil).
         private void ReadProductList()
         {
             //Läser in produktlistan ur csv.
@@ -401,14 +402,9 @@ namespace FirstApp
                 productListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
             }
         }
-        private void AddDiscount(object sender, RoutedEventArgs e)
+        //Skapar metod för inläsning av rabakkoder (csv-fil).
+        private void ReadDiscount()
         {
-            //Dokumentera om denna delen.. Den var sjukt jobbig att få till.
-            //Rensar rabattlistan och läser in den på nytt här nedan.
-            discountList.Clear();
-
-            //Gör så att det inte spelar någon roll om användaren knappar in stora eller små bokstäver.
-            discountBox.Text = discountBox.Text.ToUpper();
             string[] discountArray = File.ReadAllLines("rabattKoder.csv");
             foreach (string code in discountArray)
             {
@@ -419,6 +415,19 @@ namespace FirstApp
                 Discount discount = new Discount(discountCode, discountPercentage);
                 discountList.Add(discount);
             }
+        }
+
+        private void AddDiscount(object sender, RoutedEventArgs e)
+        {
+            //Dokumentera om denna delen.. Den var sjukt jobbig att få till.
+            //Rensar rabattlistan och läser in den på nytt här nedan.
+            discountList.Clear();
+
+            //Gör så att det inte spelar någon roll om användaren knappar in stora eller små bokstäver.
+            discountBox.Text = discountBox.Text.ToUpper();
+
+            //Läser in rabattkodslistan (csv-fil).
+            ReadDiscount();
 
             foreach (Discount y in discountList)
             {
@@ -603,7 +612,7 @@ namespace FirstApp
             foreach (Product product in cartList)
             {
                 var title = product.Title;
-                var description = product.Descprition;
+                var description = product.Description;
                 var price = product.Price;
                 var image = product.Image;
 
@@ -666,7 +675,7 @@ namespace FirstApp
                 int selectedIndex = productListBox.SelectedIndex;
                 string path = @"Images\" + productList[selectedIndex].Image;
 
-                productDescription.Text = productList[selectedIndex].Descprition;
+                productDescription.Text = productList[selectedIndex].Description;
                 productDescription.Visibility = Visibility.Visible;
 
                 image.Source = new BitmapImage(new Uri(path, UriKind.Relative));
