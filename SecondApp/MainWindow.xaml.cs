@@ -198,7 +198,7 @@ namespace SecondApp
 
             TextBlock addNewDiscountCode = new TextBlock
             {
-                FontSize = 20,
+                FontSize = 15,
                 Margin = new Thickness(0, 20, 0, 0),
                 TextAlignment = TextAlignment.Center,
                 Text = "Rabattkod: ",
@@ -216,10 +216,10 @@ namespace SecondApp
 
             TextBlock discountPercentageLabel = new TextBlock
             {
-                FontSize = 20,
+                FontSize = 15,
                 Margin = new Thickness(0, 20, 0, 0),
                 TextAlignment = TextAlignment.Center,
-                Text = "Procent %: ",
+                Text = "Procent % (Ex: 25): ",
             };
             newDiscountPanel.Children.Add(discountPercentageLabel);
 
@@ -499,18 +499,33 @@ namespace SecondApp
             {
                 addDiscountCode.Text = addDiscountCode.Text.ToUpper();
             }
-            //Kollar om användaren knappar in siffror. Om inte så visa en MessageBox.
+
             decimal parsedValue;
+            string discountCode = addDiscountCode.Text;
+            //Kollar om användaren knappar in siffror. Om inte så visa en MessageBox.
             if (!decimal.TryParse(addDiscountPercentage.Text, out parsedValue))
             {
                 MessageBox.Show("Procentmängden behöver matas in i form av siffror.");
                 return;
             }
+            else
+            {
+                parsedValue = parsedValue / 100;
+            }
 
-            //else
-            //{
-            //    //Tanken är att lägga in Texten som användaren matat in i discountList så att det läggs in på detta vis (ex): "HEJHEJ88,22.00"  
-            //}
+            //Rensar föregående lista när man lägger till så att det inte blir dubbelt av samma lista när användaren lägger till en ny kod.
+            discountListBox.Items.Clear();
+
+            //Lägger in värdena som användaren matat in i TextBoxes och gör om till ett objekt.
+            Discount addedDiscount = new Discount(discountCode, parsedValue);
+            //Lägger till objektet i discountList.
+            discountList.Add(addedDiscount);
+
+            //Skriver ut alla objekt från discountList till discountListBox.
+            foreach (Discount d in discountList)
+            {
+                discountListBox.Items.Add(d.Code + " | " + (d.DiscountPercentage * 100) + "%");
+            }
         }
 
         private void ClickedSaveDiscount(object sender, RoutedEventArgs e)
