@@ -283,6 +283,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             discountPanel.Children.Add(saveDiscount);
+            saveDiscount.Click += ClickedSaveDiscount;
 
             Button removeDiscountButton = new Button
             {
@@ -461,6 +462,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Left
             };
             showProductListInEdit.Children.Add(saveProduct);
+            saveProduct.Click += ClickedSaveProductList;
 
             Button RemoveProductButton = new Button
             {
@@ -481,6 +483,50 @@ namespace SecondApp
             };
             showProductListInEdit.Children.Add(backFromProductEditing);
             backFromProductEditing.Click += ClickedBackFromEditing;
+        }
+
+        private void ClickedSaveDiscount(object sender, RoutedEventArgs e)
+        {
+            var csv = new StringBuilder();
+            foreach (Discount discount in discountList)
+            {
+                var code = discount.Code;
+                var percentage = discount.DiscountPercentage;
+
+                var newLine = string.Format("{0},{1}", code, percentage.ToString().Replace(',', '.'));
+                csv.AppendLine(newLine);
+            }
+            File.WriteAllText(@"C:\Windows\Temp\savedDiscountList.csv", csv.ToString());
+
+            MessageBoxResult info = MessageBox.Show("Tack, ändringar för dina rabattkoder har nu sparats..", "Sparade ändringar", MessageBoxButton.OK, MessageBoxImage.Information);
+            switch (info)
+            {
+                case MessageBoxResult.OK:
+                    break;
+            }
+        }
+
+        private void ClickedSaveProductList(object sender, RoutedEventArgs e)
+        {
+            var csv = new StringBuilder();
+            foreach (Product product in productList)
+            {
+                var title = product.Title;
+                var description = product.Description;
+                var price = product.Price;
+                var image = product.Image;
+
+                var newLine = string.Format("{0},{1},{2},{3}", title, description, price.ToString().Replace(',', '.'), image);
+                csv.AppendLine(newLine);
+            }
+            File.WriteAllText(@"C:\Windows\Temp\savedEditedProducts.csv", csv.ToString());
+
+            MessageBoxResult info = MessageBox.Show("Tack, ändringar i ditt produktutbud har nu sparats..", "Sparade ändringar", MessageBoxButton.OK, MessageBoxImage.Information);
+            switch (info)
+            {
+                case MessageBoxResult.OK:
+                    break;
+            }
         }
 
         private void ClickedRemoveDiscount(object sender, RoutedEventArgs e)
