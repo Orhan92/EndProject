@@ -27,7 +27,7 @@ namespace SecondApp
         private WrapPanel imageWrapPanel;
         private TextBlock label;
         private ListBox productListBox, discountListBox;
-        private TextBox newPrice;
+        private TextBox newPrice, addDiscountCode, addDiscountPercentage;
         public MainWindow()
         {
             InitializeComponent();
@@ -205,14 +205,14 @@ namespace SecondApp
             };
             newDiscountPanel.Children.Add(addNewDiscountCode);
 
-            TextBox discountCode = new TextBox
+            addDiscountCode = new TextBox
             {
                 Background = Brushes.LightGoldenrodYellow,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Margin = new Thickness(0, 2, 5, 0),
                 Width = 150,
             };
-            newDiscountPanel.Children.Add(discountCode);
+            newDiscountPanel.Children.Add(addDiscountCode);
 
             TextBlock discountPercentageLabel = new TextBlock
             {
@@ -223,7 +223,7 @@ namespace SecondApp
             };
             newDiscountPanel.Children.Add(discountPercentageLabel);
 
-            TextBox addDiscountPercentage = new TextBox
+            addDiscountPercentage = new TextBox
             {
                 Background = Brushes.LightGoldenrodYellow,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -240,6 +240,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             newDiscountPanel.Children.Add(addDiscount);
+            addDiscount.Click += AddNewDiscount;
 
             //KOLUMN 2 RABATT
             discountPanel = new StackPanel { Orientation = Orientation.Vertical };
@@ -483,6 +484,33 @@ namespace SecondApp
             };
             showProductListInEdit.Children.Add(backFromProductEditing);
             backFromProductEditing.Click += ClickedBackFromProduct;
+        }
+
+        private void AddNewDiscount(object sender, RoutedEventArgs e)
+        {
+            //Kollar om användaren inte har knappat in en kod eller om längden på koden är mindre än 3 eller större än 20.
+            if (addDiscountCode.Text == string.Empty || addDiscountCode.Text.Length < 3 || addDiscountCode.Text.Length > 20)
+            {
+                MessageBox.Show("Din rabattkod uppfyller inte kriterierna (3-20 tecken).");
+                return;
+            }
+            //Om användarens rabattkod är giltigt inmatad så gör vi om de till stora bokstäver.
+            else
+            {
+                addDiscountCode.Text = addDiscountCode.Text.ToUpper();
+            }
+            //Kollar om användaren knappar in siffror. Om inte så visa en MessageBox.
+            decimal parsedValue;
+            if (!decimal.TryParse(addDiscountPercentage.Text, out parsedValue))
+            {
+                MessageBox.Show("Procentmängden behöver matas in i form av siffror.");
+                return;
+            }
+
+            //else
+            //{
+            //    //Tanken är att lägga in Texten som användaren matat in i discountList så att det läggs in på detta vis (ex): "HEJHEJ88,22.00"  
+            //}
         }
 
         private void ClickedSaveDiscount(object sender, RoutedEventArgs e)
