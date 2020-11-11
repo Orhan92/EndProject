@@ -22,6 +22,7 @@ namespace SecondApp
         private Image image;
         private Grid productGrid, discountGrid, grid, startGrid;
         private List<Product> productList;
+        private List<Discount> discountList;
         private StackPanel userChoice, addNewProduct, showProductListInEdit, discountPanel, newDiscountPanel;
         private WrapPanel imageWrapPanel;
         private TextBlock label;
@@ -118,7 +119,7 @@ namespace SecondApp
             discountGrid.Visibility = Visibility.Collapsed;
 
 
-
+            discountList = new List<Discount>();
             productList = new List<Product>();
 
             //Start Window
@@ -174,8 +175,8 @@ namespace SecondApp
             exitProgram.Click += ClickedExit;
 
             //RABATTÄNDRINGAR
-
-            //KOLUMN 1
+            //KOLUMN 0 står tom.
+            //KOLUMN 1 RABATT
             newDiscountPanel = new StackPanel { Orientation = Orientation.Vertical };
             discountGrid.Children.Add(newDiscountPanel);
             Grid.SetColumn(newDiscountPanel, 1);
@@ -240,7 +241,7 @@ namespace SecondApp
             };
             newDiscountPanel.Children.Add(addDiscount);
 
-            //KOLUMN 2
+            //KOLUMN 2 RABATT
             discountPanel = new StackPanel { Orientation = Orientation.Vertical };
             discountGrid.Children.Add(discountPanel);
             Grid.SetColumn(discountPanel, 2);
@@ -295,7 +296,7 @@ namespace SecondApp
 
 
             //PRODUKTÄNDRINGAR NEDAN.
-            //KOLUMN 0
+            //KOLUMN 0 PRODUKT
             imageWrapPanel = new WrapPanel { Orientation = Orientation.Vertical };
             productGrid.Children.Add(imageWrapPanel);
             Grid.SetColumn(imageWrapPanel, 0);
@@ -314,10 +315,7 @@ namespace SecondApp
             imageWrapPanel.Children.Add(image);
 
 
-
-            //GUI when user clicks on "Lägg till".
-            //Stackpanel in column 1
-            //KOLUMN 1
+            //KOLUMN 1 PRODUKT
             addNewProduct = new StackPanel { Orientation = Orientation.Vertical };
             productGrid.Children.Add(addNewProduct);
             Grid.SetColumn(addNewProduct, 1);
@@ -411,7 +409,7 @@ namespace SecondApp
             };
             addNewProduct.Children.Add(addNewProductButton);
 
-            //KOLUMN 2
+            //KOLUMN 2 PRODUKT
             showProductListInEdit = new StackPanel { Orientation = Orientation.Vertical };
             productGrid.Children.Add(showProductListInEdit);
             Grid.SetColumn(showProductListInEdit, 2);
@@ -462,7 +460,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             showProductListInEdit.Children.Add(backFromProductEditing);
-            backFromProductEditing.Click += ClickedBackFromEditing; 
+            backFromProductEditing.Click += ClickedBackFromEditing;
         }
 
         private void BackFromDiscountEditingClick(object sender, RoutedEventArgs e)
@@ -475,6 +473,8 @@ namespace SecondApp
         {
             startGrid.Visibility = Visibility.Collapsed;
             discountGrid.Visibility = Visibility.Visible;
+
+            ReadDiscountList();
         }
 
         private void ClickedAddNewProduct(object sender, RoutedEventArgs e)
@@ -503,6 +503,8 @@ namespace SecondApp
         {
             startGrid.Visibility = Visibility.Collapsed;
             productGrid.Visibility = Visibility.Visible;
+
+            ReadProductList();
         }
 
         private Image AddImage(string filePath)
@@ -525,29 +527,56 @@ namespace SecondApp
             Application.Current.Shutdown();
         }
 
-        //private void ReadProductList()
-        //{
-        //    //Läser in produktlistan ur csv från huvudprogrammet (FirstApp).
-        //    string[] productArray = File.ReadAllLines("produktLista.csv");
+        private void ReadProductList()
+        {
+            productList.Clear();
+            productListBox.Items.Clear();
+            //Läser in produktlistan ur csv från huvudprogrammet (FirstApp).
+            string[] productArray = File.ReadAllLines("produktLista.csv");
 
-        //    //Separerar alla ',' och lägger in de i diverse titel.
-        //    foreach (string line in productArray)
-        //    {
-        //        string[] columns = line.Split(',');
-        //        string productName = columns[0];
-        //        string productDescription = columns[1];
-        //        decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
-        //        string productImage = columns[3];
+            //Separerar alla ',' och lägger in de i diverse titel.
+            foreach (string line in productArray)
+            {
+                string[] columns = line.Split(',');
+                string productName = columns[0];
+                string productDescription = columns[1];
+                decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
+                string productImage = columns[3];
 
-        //        //För varje rad i csv filen skapar vi ett nytt objekt av klassen.
-        //        Product products = new Product(productName, productDescription, productPrice, productImage);
-        //        //Lägger till objektet i en lista (titelnamn, beskrivning, bild och pris)
-        //        productList.Add(products);
-        //    }
-        //    foreach (Product p in productList)
-        //    {
-        //        productListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
-        //    }
-        //}
+                //För varje rad i csv filen skapar vi ett nytt objekt av klassen.
+                Product products = new Product(productName, productDescription, productPrice, productImage);
+                //Lägger till objektet i en lista (titelnamn, beskrivning, bild och pris)
+                productList.Add(products);
+            }
+            foreach (Product p in productList)
+            {
+                productListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
+            }
+        }
+        private void ReadDiscountList()
+        {
+            discountList.Clear();
+            discountListBox.Items.Clear();
+
+            //Läser in produktlistan ur csv från huvudprogrammet (FirstApp).
+            string[] discountArray = File.ReadAllLines("rabattKoder.csv");
+
+            //Separerar alla ',' och lägger in de i diverse titel.
+            foreach (string line in discountArray)
+            {
+                string[] columns = line.Split(',');
+                string discountCode = columns[0];
+                decimal discountPercentage = decimal.Parse(columns[1].Replace('.', ','));
+
+                //För varje rad i csv filen skapar vi ett nytt objekt av klassen.
+                Discount discount = new Discount(discountCode, discountPercentage);
+                //Lägger till objektet i en lista (titelnamn, beskrivning, bild och pris)
+                discountList.Add(discount);
+            }
+            foreach (Discount d in discountList)
+            {
+                discountListBox.Items.Add(d.Code + " | " + (d.DiscountPercentage * 100) + "%");
+            }
+        }
     }
 }
