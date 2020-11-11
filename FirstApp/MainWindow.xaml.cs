@@ -416,7 +416,6 @@ namespace FirstApp
                 discountList.Add(discount);
             }
         }
-
         private void AddDiscount(object sender, RoutedEventArgs e)
         {
             //Dokumentera om denna delen.. Den var sjukt jobbig att få till.
@@ -527,9 +526,9 @@ namespace FirstApp
             //Kolumn 1: Uppdaterad information när användaren klickat på "Beställ"
             orderPanel.Visibility = Visibility.Visible;
             discount.Visibility = Visibility.Visible;
-            saveChart.Visibility = Visibility.Visible; //Denna rad visas inte trots att 'discount' (rad 507) är Visible därav denna kod. 
-            discountBox.Visibility = Visibility.Visible; //Denna rad visas inte trots att 'discount' (rad 507) är Visible därav denna kod.
-            addDiscount.Visibility = Visibility.Visible; //Denna rad visas inte trots att 'discount' (rad 507) är Visible därav denna kod.
+            saveChart.Visibility = Visibility.Visible; //Denna rad visas inte trots att 'discount' (x) är Visible därav denna kod. 
+            discountBox.Visibility = Visibility.Visible; //Denna rad visas inte trots att 'discount' (x) är Visible därav denna kod.
+            addDiscount.Visibility = Visibility.Visible; //Denna rad visas inte trots att 'discount' (x) är Visible därav denna kod.
             backFromOrder.Visibility = Visibility.Visible;
 
             //Kolumn 2: Collapsar/Döljer även denna vid beställning.

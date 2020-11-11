@@ -19,10 +19,13 @@ namespace SecondApp
 {
     public partial class MainWindow : Window
     {
+        private Image image;
+        private Grid productGrid, grid, startGrid;
         private List<Product> productList;
-        private StackPanel userChoice, editingButtons, removeOrBackButton, addNewProduct, showProductListInEdit;
+        private StackPanel userChoice, addNewProduct, showProductListInEdit;
+        private WrapPanel imageWrapPanel;
         private TextBlock label;
-        private ListBox productListBox, productListInEdit;
+        private ListBox productListInEdit;
         private TextBox newPrice;
         public MainWindow()
         {
@@ -44,18 +47,55 @@ namespace SecondApp
             Content = root;
 
             // Main grid
-            Grid grid = new Grid();
+            grid = new Grid();
             root.Content = grid;
             grid.Margin = new Thickness(5);
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //0
-            //grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(350) }); //1
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //2
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //1
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //2
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //3
 
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(300) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
+            grid.Visibility = Visibility.Visible;
+
+            startGrid = new Grid();
+            grid.Children.Add(startGrid);
+            Grid.SetColumn(startGrid, 0);
+            Grid.SetRow(startGrid, 0);
+            Grid.SetColumnSpan(startGrid, 3);
+            Grid.SetRowSpan(startGrid, 4);
+
+            startGrid.Margin = new Thickness(5);
+            startGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //0
+            startGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //1
+            startGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //2
+            startGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //3
+
+            startGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
+            startGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(300) });
+            startGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
+            startGrid.Visibility = Visibility.Visible;
+
+            productGrid = new Grid();
+            grid.Children.Add(productGrid);
+            Grid.SetColumn(productGrid, 0);
+            Grid.SetRow(productGrid, 0);
+            Grid.SetColumnSpan(productGrid, 3);
+            Grid.SetRowSpan(productGrid, 4);
+
+            productGrid.Margin = new Thickness(5);
+            productGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //0
+            productGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //1
+            productGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //2
+            productGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //3
+
+            productGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
+            productGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(300) });
+            productGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
+            productGrid.Visibility = Visibility.Collapsed;
+
 
             productList = new List<Product>();
 
@@ -67,13 +107,13 @@ namespace SecondApp
                 Width = 200,
                 Text = "Vad vill du göra?"
             };
-            grid.Children.Add(label);
+            startGrid.Children.Add(label);
             Grid.SetColumn(label, 1);
             Grid.SetRow(label, 0);
 
             //Button stackpanel
             userChoice = new StackPanel { Orientation = Orientation.Vertical };
-            grid.Children.Add(userChoice);
+            startGrid.Children.Add(userChoice);
             Grid.SetColumn(userChoice, 1);
             Grid.SetRow(userChoice, 2);
 
@@ -110,87 +150,40 @@ namespace SecondApp
             exitProgram.Click += ClickedExit;
             //Button stack panel above
 
-            //After clicking on "produktändringar"
-            productListBox = new ListBox
+
+
+            //Bilder för kolumn 0
+            imageWrapPanel = new WrapPanel { Orientation = Orientation.Horizontal };
+            productGrid.Children.Add(imageWrapPanel);
+            Grid.SetColumn(imageWrapPanel, 0);
+            Grid.SetRow(imageWrapPanel, 1);
+
+            TextBlock imageLabel = new TextBlock
             {
-                Background = Brushes.AliceBlue,
-                Margin = new Thickness(0, 2, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Width = 200,
-                Height = 350,
-                Visibility = Visibility.Collapsed
+                FontSize = 15,
+                Margin = new Thickness(50, 20, 0, 0),
+                TextAlignment = TextAlignment.Center,
+                //Width = 200,
+                Text = "Bilder: ",
             };
-            grid.Children.Add(productListBox);
-            Grid.SetColumn(productListBox, 1);
-            Grid.SetRow(productListBox, 1);
+            imageWrapPanel.Children.Add(imageLabel);
 
-            //Editing buttons after user clicked on productediting
-            editingButtons = new StackPanel { Orientation = Orientation.Horizontal };
-            grid.Children.Add(editingButtons);
-            Grid.SetColumn(editingButtons, 1);
-            Grid.SetRow(editingButtons, 2);
-            editingButtons.Margin = new Thickness(0, 25, 0, 0);
-            editingButtons.Visibility = Visibility.Collapsed;
+            image = AddImage(@"C:\Windows\Temp\Images\smiley.jpg"); 
+            imageWrapPanel.Children.Add(image);
 
-            Button addNew = new Button
-            {
-                Content = "Lägg till",
-                Width = 100,
-                Margin = new Thickness(50, 2, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-            editingButtons.Children.Add(addNew);
-            addNew.Click += ClickedAddNewProduct;
-
-            Button editProductButton = new Button
-            {
-                Content = "Ändra",
-                Width = 100,
-                Margin = new Thickness(0, 2, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-            editingButtons.Children.Add(editProductButton);
-
-            //Remove or back buttons after user clicked on "Produktändringar"
-            removeOrBackButton = new StackPanel { Orientation = Orientation.Horizontal };
-            grid.Children.Add(removeOrBackButton);
-            Grid.SetColumn(removeOrBackButton, 1);
-            Grid.SetRow(removeOrBackButton, 3);
-            removeOrBackButton.Visibility = Visibility.Collapsed;
-
-            Button RemoveProductButton = new Button
-            {
-                Content = "Ta bort",
-                Width = 100,
-                Margin = new Thickness(50, 2, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-            removeOrBackButton.Children.Add(RemoveProductButton);
-
-            Button backFromProductEditing = new Button
-            {
-                Content = "Tillbaka",
-                Width = 100,
-                Margin = new Thickness(0, 2, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-            removeOrBackButton.Children.Add(backFromProductEditing);
-            backFromProductEditing.Click += ClickedBackFromEditing;
 
             //GUI when user clicks on "Lägg till".
             //Stackpanel in column 1
             addNewProduct = new StackPanel { Orientation = Orientation.Vertical };
-            grid.Children.Add(addNewProduct);
+            productGrid.Children.Add(addNewProduct);
             Grid.SetColumn(addNewProduct, 1);
             Grid.SetRow(addNewProduct, 1);
-            addNewProduct.Visibility = Visibility.Collapsed;
 
             TextBlock titleLabel = new TextBlock
             {
                 FontSize = 15,
                 Margin = new Thickness(0, 20, 67, 0),
                 TextAlignment = TextAlignment.Center,
-                //Width = 200,
                 Text = "Produkttitel: ",
             };
             addNewProduct.Children.Add(titleLabel);
@@ -228,7 +221,7 @@ namespace SecondApp
             TextBlock priceLabel = new TextBlock
             {
                 FontSize = 15,
-                Margin = new Thickness(0, 20, 95, 0),
+                Margin = new Thickness(0, 25, 95, 0),
                 TextAlignment = TextAlignment.Center,
                 Text = "Pris (kr): ",
             };
@@ -245,21 +238,40 @@ namespace SecondApp
             };
             addNewProduct.Children.Add(newPrice);
 
+            TextBlock imageTextBlock = new TextBlock
+            {
+                FontSize = 15,
+                Margin = new Thickness(12, 5, 95, 0),
+                TextAlignment = TextAlignment.Center,
+                Text = "Bildnamn: ",
+            };
+            addNewProduct.Children.Add(imageTextBlock);
+
+            TextBox imageBox = new TextBox
+            {
+                Background = Brushes.LightGoldenrodYellow,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 2, 50, 2),
+                TextAlignment = TextAlignment.Left,
+                TextWrapping = TextWrapping.Wrap,
+                Width = 100,
+            };
+            addNewProduct.Children.Add(imageBox);
+
             Button addNewProductButton = new Button
             {
                 Content = "Lägg till/Spara",
                 Width = 100,
-                Margin = new Thickness(0, 30, 50, 0),
+                Margin = new Thickness(0, 2, 50, 0),
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             addNewProduct.Children.Add(addNewProductButton);
 
-            //Stackpanel for column 2
+            //KOLUMN 2
             showProductListInEdit = new StackPanel { Orientation = Orientation.Vertical };
-            grid.Children.Add(showProductListInEdit);
+            productGrid.Children.Add(showProductListInEdit);
             Grid.SetColumn(showProductListInEdit, 2);
             Grid.SetRow(showProductListInEdit, 1);
-            showProductListInEdit.Visibility = Visibility.Collapsed;
 
             TextBlock currentProductList = new TextBlock
             {
@@ -275,91 +287,112 @@ namespace SecondApp
                 Background = Brushes.AliceBlue,
                 Margin = new Thickness(0, 2, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
-                Width = 200,
+                Width = 180,
                 Height = 325,
             };
             showProductListInEdit.Children.Add(productListInEdit);
+
+            Button editProductButton = new Button
+            {
+                Content = "Ändra",
+                Width = 180,
+                Margin = new Thickness(10, 2, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+            showProductListInEdit.Children.Add(editProductButton);
+
+            Button RemoveProductButton = new Button
+            {
+                Content = "Ta bort",
+                Width = 180,
+                Margin = new Thickness(0, 2, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            showProductListInEdit.Children.Add(RemoveProductButton);
+
+            Button backFromProductEditing = new Button
+            {
+                Content = "Tillbaka",
+                Width = 180,
+                Margin = new Thickness(0, 2, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            showProductListInEdit.Children.Add(backFromProductEditing);
+            backFromProductEditing.Click += ClickedBackFromEditing;
+
         }
 
         private void ClickedAddNewProduct(object sender, RoutedEventArgs e)
         {
-            label.Text = "Lägg till";
+            //label.Text = "Lägg till";
 
-            //Hiding all the editing GUI
-            productListBox.Visibility = Visibility.Collapsed;
-            editingButtons.Visibility = Visibility.Collapsed;
-            removeOrBackButton.Visibility = Visibility.Collapsed;
+            ////Hiding all the editing GUI
+            //productListBox.Visibility = Visibility.Collapsed;
+            //editingButtons.Visibility = Visibility.Collapsed;
+            //removeOrBackButton.Visibility = Visibility.Collapsed;
 
-            //Hiding the GUI from the "startwindow".
-            userChoice.Visibility = Visibility.Collapsed;
+            ////Hiding the GUI from the "startwindow".
+            //userChoice.Visibility = Visibility.Collapsed;
 
-            //Showing GUI for "Lägg till" section
-            addNewProduct.Visibility = Visibility.Visible;
-            showProductListInEdit.Visibility = Visibility.Visible;
+            ////Showing GUI for "Lägg till" section
+            //addNewProduct.Visibility = Visibility.Visible;
+            //showProductListInEdit.Visibility = Visibility.Visible;
 
         }
-
         private void ClickedBackFromEditing(object sender, RoutedEventArgs e)
         {
-            //Changing the label back to start label.
-            label.Text = "Vad vill du göra?";
-
-            //Hiding all the editing GUI
-            productListBox.Visibility = Visibility.Collapsed;
-            editingButtons.Visibility = Visibility.Collapsed;
-            removeOrBackButton.Visibility = Visibility.Collapsed;
-
-            //Showing the GUI from the "startwindow".
-            userChoice.Visibility = Visibility.Visible;
-
-            //Rensar dessa för att återställa alla värden
-            productList.Clear();
-            productListBox.Items.Clear();
+            startGrid.Visibility = Visibility.Visible;
+            productGrid.Visibility = Visibility.Collapsed;
         }
-
         private void ClickedProductEditing(object sender, RoutedEventArgs e)
         {
-            //Läser in produktlistan från csv. Anropar metoden.
-            ReadProductList();
-            //Changing the label
-            label.Text = "Sortiment";
+            startGrid.Visibility = Visibility.Collapsed;
+            productGrid.Visibility = Visibility.Visible;
+        }
 
-            //Showing these after user clicked on "Produktändringar"
-            productListBox.Visibility = Visibility.Visible;
-            editingButtons.Visibility = Visibility.Visible;
-            removeOrBackButton.Visibility = Visibility.Visible;
-
-            //Hiding the buttons from "startwindow".
-            userChoice.Visibility = Visibility.Collapsed;
-
+        private Image AddImage(string filePath)
+        {
+            ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
+            image = new Image
+            {
+                Source = source,
+                //Width = 100,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 2, 0, 0)
+            };
+            // A small rendering tweak to ensure maximum visual appeal.
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+            return image;
         }
         private void ClickedExit(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
-        private void ReadProductList()
-        {
-            //Läser in produktlistan ur csv från huvudprogrammet (FirstApp).
-            string[] productArray = File.ReadAllLines("produktLista.csv");
 
-            //Separerar alla ',' och lägger in de i diverse titel.
-            foreach (string line in productArray)
-            {
-                string[] columns = line.Split(',');
-                string productName = columns[0];
-                string productDescription = columns[1];
-                decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
-                string productImage = columns[3];
+        //private void ReadProductList()
+        //{
+        //    //Läser in produktlistan ur csv från huvudprogrammet (FirstApp).
+        //    string[] productArray = File.ReadAllLines("produktLista.csv");
 
-                //För varje rad i csv filen skapar vi ett nytt objekt av klassen.
-                Product products = new Product(productName, productDescription, productPrice, productImage);
-                //Lägger till objektet i en lista (titelnamn, beskrivning, bild och pris)
-                productList.Add(products);
-            }
-            foreach (Product p in productList)
-            {
-                productListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
-            }
-        }
+        //    //Separerar alla ',' och lägger in de i diverse titel.
+        //    foreach (string line in productArray)
+        //    {
+        //        string[] columns = line.Split(',');
+        //        string productName = columns[0];
+        //        string productDescription = columns[1];
+        //        decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
+        //        string productImage = columns[3];
+
+        //        //För varje rad i csv filen skapar vi ett nytt objekt av klassen.
+        //        Product products = new Product(productName, productDescription, productPrice, productImage);
+        //        //Lägger till objektet i en lista (titelnamn, beskrivning, bild och pris)
+        //        productList.Add(products);
+        //    }
+        //    foreach (Product p in productList)
+        //    {
+        //        productListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
+        //    }
+        //}
     }
 }
