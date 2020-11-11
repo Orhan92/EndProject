@@ -292,6 +292,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             discountPanel.Children.Add(removeDiscountButton);
+            removeDiscountButton.Click += ClickedRemoveDiscount;
 
             Button backFromDiscountEditing = new Button
             {
@@ -469,6 +470,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             showProductListInEdit.Children.Add(RemoveProductButton);
+            RemoveProductButton.Click += ClickedRemoveProduct;
 
             Button backFromProductEditing = new Button
             {
@@ -481,12 +483,27 @@ namespace SecondApp
             backFromProductEditing.Click += ClickedBackFromEditing;
         }
 
+        private void ClickedRemoveDiscount(object sender, RoutedEventArgs e)
+        {
+            int selectedIndex = discountListBox.SelectedIndex;
+            discountListBox.Items.RemoveAt(selectedIndex);
+
+            discountList.RemoveAt(selectedIndex);
+        }
+
+        private void ClickedRemoveProduct(object sender, RoutedEventArgs e)
+        {
+            int selectedIndex = productListBox.SelectedIndex;
+            productListBox.Items.RemoveAt(selectedIndex);
+
+            productList.RemoveAt(selectedIndex);
+        }
+
         private void BackFromDiscountEditingClick(object sender, RoutedEventArgs e)
         {
             startGrid.Visibility = Visibility.Visible;
             discountGrid.Visibility = Visibility.Collapsed;
         }
-
         private void ClickedDiscountEditing(object sender, RoutedEventArgs e)
         {
             startGrid.Visibility = Visibility.Collapsed;
@@ -494,7 +511,6 @@ namespace SecondApp
 
             ReadDiscountList();
         }
-
         private void ClickedAddNewProduct(object sender, RoutedEventArgs e)
         {
             //label.Text = "Lägg till";
@@ -524,7 +540,6 @@ namespace SecondApp
 
             ReadProductList();
         }
-
         private Image AddImage(string filePath)
         {
             ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
@@ -544,7 +559,6 @@ namespace SecondApp
         {
             Application.Current.Shutdown();
         }
-
         private void ReadProductList()
         {
             productList.Clear();

@@ -366,7 +366,6 @@ namespace FirstApp
                 string productPicture = columns[3];
 
                 Product savedProduct = new Product(productName, productDescription, productPrice, productPicture);
-
                 cartList.Add(savedProduct);
 
                 //Lägger in de sparade produkterna i varukorgen
