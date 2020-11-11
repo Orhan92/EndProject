@@ -275,6 +275,15 @@ namespace SecondApp
             };
             discountPanel.Children.Add(editDiscountButton);
 
+            Button saveDiscount = new Button
+            {
+                Content = "Spara",
+                Width = 180,
+                Margin = new Thickness(0, 2, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            discountPanel.Children.Add(saveDiscount);
+
             Button removeDiscountButton = new Button
             {
                 Content = "Ta bort",
@@ -288,7 +297,7 @@ namespace SecondApp
             {
                 Content = "Tillbaka",
                 Width = 180,
-                Margin = new Thickness(0, 2, 0, 0),
+                Margin = new Thickness(0, 40, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             discountPanel.Children.Add(backFromDiscountEditing);
@@ -402,7 +411,7 @@ namespace SecondApp
 
             Button addNewProductButton = new Button
             {
-                Content = "Lägg till/Spara",
+                Content = "Lägg till",
                 Width = 100,
                 Margin = new Thickness(0, 2, 50, 0),
                 HorizontalAlignment = HorizontalAlignment.Center
@@ -443,6 +452,15 @@ namespace SecondApp
             };
             showProductListInEdit.Children.Add(editProductButton);
 
+            Button saveProduct = new Button
+            {
+                Content = "Spara",
+                Width = 180,
+                Margin = new Thickness(10, 2, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+            showProductListInEdit.Children.Add(saveProduct);
+
             Button RemoveProductButton = new Button
             {
                 Content = "Ta bort",
@@ -456,7 +474,7 @@ namespace SecondApp
             {
                 Content = "Tillbaka",
                 Width = 180,
-                Margin = new Thickness(0, 2, 0, 0),
+                Margin = new Thickness(0, 40, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             showProductListInEdit.Children.Add(backFromProductEditing);
