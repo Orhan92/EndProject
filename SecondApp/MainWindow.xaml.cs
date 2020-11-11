@@ -485,7 +485,7 @@ namespace SecondApp
             showProductListInEdit.Children.Add(backFromProductEditing);
             backFromProductEditing.Click += ClickedBackFromProduct;
         }
-
+        
         private void AddNewDiscount(object sender, RoutedEventArgs e)
         {
             //Kollar om användaren inte har knappat in en kod eller om längden på koden är mindre än 3 eller större än 20.
