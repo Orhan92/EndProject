@@ -235,8 +235,8 @@ namespace SecondApp
             Button addDiscount = new Button
             {
                 Content = "Lägg till",
-                Width = 180,
-                Margin = new Thickness(0, 36, 0, 0),
+                Width = 150,
+                Margin = new Thickness(0, 36, 5, 0),
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             newDiscountPanel.Children.Add(addDiscount);
@@ -303,7 +303,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             discountPanel.Children.Add(backFromDiscountEditing);
-            backFromDiscountEditing.Click += BackFromDiscountEditingClick;
+            backFromDiscountEditing.Click += ClickedBackFromDiscount;
 
 
             //PRODUKTÄNDRINGAR NEDAN.
@@ -482,7 +482,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             showProductListInEdit.Children.Add(backFromProductEditing);
-            backFromProductEditing.Click += ClickedBackFromEditing;
+            backFromProductEditing.Click += ClickedBackFromProduct;
         }
 
         private void ClickedSaveDiscount(object sender, RoutedEventArgs e)
@@ -545,11 +545,12 @@ namespace SecondApp
             productList.RemoveAt(selectedIndex);
         }
 
-        private void BackFromDiscountEditingClick(object sender, RoutedEventArgs e)
+        private void ClickedBackFromDiscount(object sender, RoutedEventArgs e)
         {
             startGrid.Visibility = Visibility.Visible;
             discountGrid.Visibility = Visibility.Collapsed;
         }
+
         private void ClickedDiscountEditing(object sender, RoutedEventArgs e)
         {
             startGrid.Visibility = Visibility.Collapsed;
@@ -557,28 +558,13 @@ namespace SecondApp
 
             ReadDiscountList();
         }
-        private void ClickedAddNewProduct(object sender, RoutedEventArgs e)
-        {
-            //label.Text = "Lägg till";
 
-            ////Hiding all the editing GUI
-            //productListBox.Visibility = Visibility.Collapsed;
-            //editingButtons.Visibility = Visibility.Collapsed;
-            //removeOrBackButton.Visibility = Visibility.Collapsed;
-
-            ////Hiding the GUI from the "startwindow".
-            //userChoice.Visibility = Visibility.Collapsed;
-
-            ////Showing GUI for "Lägg till" section
-            //addNewProduct.Visibility = Visibility.Visible;
-            //showProductListInEdit.Visibility = Visibility.Visible;
-
-        }
-        private void ClickedBackFromEditing(object sender, RoutedEventArgs e)
+        private void ClickedBackFromProduct(object sender, RoutedEventArgs e)
         {
             startGrid.Visibility = Visibility.Visible;
             productGrid.Visibility = Visibility.Collapsed;
         }
+
         private void ClickedProductEditing(object sender, RoutedEventArgs e)
         {
             startGrid.Visibility = Visibility.Collapsed;
@@ -586,25 +572,13 @@ namespace SecondApp
 
             ReadProductList();
         }
-        private Image AddImage(string filePath)
-        {
-            ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
-            image = new Image
-            {
-                Source = source,
-                Width = 50,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 5, 0, 0)
-            };
-            // A small rendering tweak to ensure maximum visual appeal.
-            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
-            return image;
-        }
+
         private void ClickedExit(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
+
+        //Calling for ReadProductList when user clicks on ClickedProductEditing method.
         private void ReadProductList()
         {
             productList.Clear();
@@ -631,6 +605,8 @@ namespace SecondApp
                 productListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
             }
         }
+
+        //Calling for ReadDiscountList when user clicks on ClickedDiscountEditing method.
         private void ReadDiscountList()
         {
             discountList.Clear();
@@ -655,6 +631,22 @@ namespace SecondApp
             {
                 discountListBox.Items.Add(d.Code + " | " + (d.DiscountPercentage * 100) + "%");
             }
+        }
+
+        private Image AddImage(string filePath)
+        {
+            ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
+            image = new Image
+            {
+                Source = source,
+                Width = 50,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 5, 0, 0)
+            };
+            // A small rendering tweak to ensure maximum visual appeal.
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+            return image;
         }
     }
 }
