@@ -7,7 +7,59 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Pictures\angrysmiley.jpg" />
+    <None Remove="Pictures\confusedsmiley.jpg" />
+    <None Remove="Pictures\cryingsmiley.jpg" />
+    <None Remove="Pictures\happysmiley.jpg" />
+    <None Remove="Pictures\hjartsmiley.jpg" />
+    <None Remove="Pictures\laughingsmiley.jpg" />
+    <None Remove="Pictures\sadsmiley.jpg" />
+    <None Remove="Pictures\tummenner.jpg" />
+    <None Remove="Pictures\tummenupp.jpg" />
+    <None Remove="Pictures\vomitsmiley.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Pictures\angrysmiley.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Pictures\confusedsmiley.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Pictures\cryingsmiley.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Pictures\happysmiley.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Pictures\hjartsmiley.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Pictures\laughingsmiley.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Pictures\sadsmiley.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Pictures\tummenner.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Pictures\tummenupp.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Pictures\vomitsmiley.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FirstApp\FirstApp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="MainWindow.xaml.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
 
 </Project>

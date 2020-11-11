@@ -20,12 +20,12 @@ namespace SecondApp
     public partial class MainWindow : Window
     {
         private Image image;
-        private Grid productGrid, grid, startGrid;
+        private Grid productGrid, discountGrid, grid, startGrid;
         private List<Product> productList;
-        private StackPanel userChoice, addNewProduct, showProductListInEdit;
+        private StackPanel userChoice, addNewProduct, showProductListInEdit, discountPanel, newDiscountPanel;
         private WrapPanel imageWrapPanel;
         private TextBlock label;
-        private ListBox productListInEdit;
+        private ListBox productListBox, discountListBox;
         private TextBox newPrice;
         public MainWindow()
         {
@@ -60,6 +60,7 @@ namespace SecondApp
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
             grid.Visibility = Visibility.Visible;
 
+            //Start window Grid.
             startGrid = new Grid();
             grid.Children.Add(startGrid);
             Grid.SetColumn(startGrid, 0);
@@ -78,6 +79,7 @@ namespace SecondApp
             startGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
             startGrid.Visibility = Visibility.Visible;
 
+            //Grid for product editing
             productGrid = new Grid();
             grid.Children.Add(productGrid);
             Grid.SetColumn(productGrid, 0);
@@ -96,9 +98,30 @@ namespace SecondApp
             productGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
             productGrid.Visibility = Visibility.Collapsed;
 
+            //Grid for discount editing
+            discountGrid = new Grid();
+            grid.Children.Add(discountGrid);
+            Grid.SetColumn(discountGrid, 0);
+            Grid.SetRow(discountGrid, 0);
+            Grid.SetColumnSpan(discountGrid, 3);
+            Grid.SetRowSpan(discountGrid, 4);
+
+            discountGrid.Margin = new Thickness(5);
+            discountGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //0
+            discountGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //1
+            discountGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //2
+            discountGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); //3
+
+            discountGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
+            discountGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(300) });
+            discountGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
+            discountGrid.Visibility = Visibility.Collapsed;
+
+
 
             productList = new List<Product>();
 
+            //Start Window
             label = new TextBlock
             {
                 FontSize = 20,
@@ -137,6 +160,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             userChoice.Children.Add(discountEditing);
+            discountEditing.Click += ClickedDiscountEditing;
 
             Button exitProgram = new Button
             {
@@ -148,12 +172,131 @@ namespace SecondApp
             };
             userChoice.Children.Add(exitProgram);
             exitProgram.Click += ClickedExit;
-            //Button stack panel above
+
+            //RABATTÄNDRINGAR
+
+            //KOLUMN 1
+            newDiscountPanel = new StackPanel { Orientation = Orientation.Vertical };
+            discountGrid.Children.Add(newDiscountPanel);
+            Grid.SetColumn(newDiscountPanel, 1);
+            Grid.SetRow(newDiscountPanel, 1);
+
+            image = AddImage(@"\Pictures\happysmiley.jpg");
+            image.Width = 100;
+            image.Margin = new Thickness(0, 50, 0, 0);
+            newDiscountPanel.Children.Add(image);
+
+            TextBlock addNewDiscountLabel = new TextBlock
+            {
+                FontSize = 25,
+                Margin = new Thickness(0, 20, 0, 0),
+                TextAlignment = TextAlignment.Center,
+                Text = "Skapa ny rabattkod",
+            };
+            newDiscountPanel.Children.Add(addNewDiscountLabel);
+
+            TextBlock addNewDiscountCode = new TextBlock
+            {
+                FontSize = 20,
+                Margin = new Thickness(0, 20, 0, 0),
+                TextAlignment = TextAlignment.Center,
+                Text = "Rabattkod: ",
+            };
+            newDiscountPanel.Children.Add(addNewDiscountCode);
+
+            TextBox discountCode = new TextBox
+            {
+                Background = Brushes.LightGoldenrodYellow,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 2, 5, 0),
+                Width = 150,
+            };
+            newDiscountPanel.Children.Add(discountCode);
+
+            TextBlock discountPercentageLabel = new TextBlock
+            {
+                FontSize = 20,
+                Margin = new Thickness(0, 20, 0, 0),
+                TextAlignment = TextAlignment.Center,
+                Text = "Procent %: ",
+            };
+            newDiscountPanel.Children.Add(discountPercentageLabel);
+
+            TextBox addDiscountPercentage = new TextBox
+            {
+                Background = Brushes.LightGoldenrodYellow,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 2, 5, 0),
+                Width = 150,
+            };
+            newDiscountPanel.Children.Add(addDiscountPercentage);
+
+            Button addDiscount = new Button
+            {
+                Content = "Lägg till",
+                Width = 180,
+                Margin = new Thickness(0, 36, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            newDiscountPanel.Children.Add(addDiscount);
+
+            //KOLUMN 2
+            discountPanel = new StackPanel { Orientation = Orientation.Vertical };
+            discountGrid.Children.Add(discountPanel);
+            Grid.SetColumn(discountPanel, 2);
+            Grid.SetRow(discountPanel, 1);
+
+            TextBlock discountLabel = new TextBlock
+            {
+                FontSize = 15,
+                Margin = new Thickness(0, 20, 0, 0),
+                TextAlignment = TextAlignment.Center,
+                Text = "Aktiva rabattkoder: ",
+            };
+            discountPanel.Children.Add(discountLabel);
+
+            discountListBox = new ListBox
+            {
+                Background = Brushes.AliceBlue,
+                Margin = new Thickness(0, 2, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Width = 180,
+                Height = 325,
+            };
+            discountPanel.Children.Add(discountListBox);
+
+            Button editDiscountButton = new Button
+            {
+                Content = "Ändra",
+                Width = 180,
+                Margin = new Thickness(10, 2, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+            discountPanel.Children.Add(editDiscountButton);
+
+            Button removeDiscountButton = new Button
+            {
+                Content = "Ta bort",
+                Width = 180,
+                Margin = new Thickness(0, 2, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            discountPanel.Children.Add(removeDiscountButton);
+
+            Button backFromDiscountEditing = new Button
+            {
+                Content = "Tillbaka",
+                Width = 180,
+                Margin = new Thickness(0, 2, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            discountPanel.Children.Add(backFromDiscountEditing);
+            backFromDiscountEditing.Click += BackFromDiscountEditingClick;
 
 
-
-            //Bilder för kolumn 0
-            imageWrapPanel = new WrapPanel { Orientation = Orientation.Horizontal };
+            //PRODUKTÄNDRINGAR NEDAN.
+            //KOLUMN 0
+            imageWrapPanel = new WrapPanel { Orientation = Orientation.Vertical };
             productGrid.Children.Add(imageWrapPanel);
             Grid.SetColumn(imageWrapPanel, 0);
             Grid.SetRow(imageWrapPanel, 1);
@@ -167,13 +310,14 @@ namespace SecondApp
                 Text = "Bilder: ",
             };
             imageWrapPanel.Children.Add(imageLabel);
-
-            image = AddImage(@"C:\Windows\Temp\Images\smiley.jpg"); 
+            image = AddImage(@"Pictures\tummenupp.jpg");
             imageWrapPanel.Children.Add(image);
+
 
 
             //GUI when user clicks on "Lägg till".
             //Stackpanel in column 1
+            //KOLUMN 1
             addNewProduct = new StackPanel { Orientation = Orientation.Vertical };
             productGrid.Children.Add(addNewProduct);
             Grid.SetColumn(addNewProduct, 1);
@@ -282,7 +426,7 @@ namespace SecondApp
             };
             showProductListInEdit.Children.Add(currentProductList);
 
-            productListInEdit = new ListBox
+            productListBox = new ListBox
             {
                 Background = Brushes.AliceBlue,
                 Margin = new Thickness(0, 2, 0, 0),
@@ -290,7 +434,7 @@ namespace SecondApp
                 Width = 180,
                 Height = 325,
             };
-            showProductListInEdit.Children.Add(productListInEdit);
+            showProductListInEdit.Children.Add(productListBox);
 
             Button editProductButton = new Button
             {
@@ -318,8 +462,19 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             showProductListInEdit.Children.Add(backFromProductEditing);
-            backFromProductEditing.Click += ClickedBackFromEditing;
+            backFromProductEditing.Click += ClickedBackFromEditing; 
+        }
 
+        private void BackFromDiscountEditingClick(object sender, RoutedEventArgs e)
+        {
+            startGrid.Visibility = Visibility.Visible;
+            discountGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void ClickedDiscountEditing(object sender, RoutedEventArgs e)
+        {
+            startGrid.Visibility = Visibility.Collapsed;
+            discountGrid.Visibility = Visibility.Visible;
         }
 
         private void ClickedAddNewProduct(object sender, RoutedEventArgs e)
@@ -356,10 +511,10 @@ namespace SecondApp
             image = new Image
             {
                 Source = source,
-                //Width = 100,
+                Width = 50,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 2, 0, 0)
+                Margin = new Thickness(0, 5, 0, 0)
             };
             // A small rendering tweak to ensure maximum visual appeal.
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
