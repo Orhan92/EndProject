@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="pictureNames.csv" />
     <None Remove="Pictures\angrysmiley.jpg" />
     <None Remove="Pictures\confusedsmiley.jpg" />
     <None Remove="Pictures\cryingsmiley.jpg" />
@@ -20,6 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="pictureNames.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Pictures\angrysmiley.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

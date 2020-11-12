@@ -23,11 +23,13 @@ namespace SecondApp
         private Grid productGrid, discountGrid, grid, startGrid;
         private List<Product> productList;
         private List<Discount> discountList;
+        private List<string> pictureNames;
+        private RadioButton checkBox;
         private StackPanel userChoice, addNewProduct, showProductListInEdit, discountPanel, newDiscountPanel;
         private WrapPanel imageWrapPanel;
         private TextBlock label;
         private ListBox productListBox, discountListBox;
-        private TextBox newPrice, addDiscountCode, addDiscountPercentage;
+        private TextBox newPrice, addDiscountCode, addDiscountPercentage, imageBox;
         public MainWindow()
         {
             InitializeComponent();
@@ -121,6 +123,8 @@ namespace SecondApp
 
             discountList = new List<Discount>();
             productList = new List<Product>();
+            //pictureNames innehåller relativ sökväg till varje bild (Pictures\*.jpg).
+            pictureNames = imageNameList();
 
             //Start Window
             label = new TextBlock
@@ -236,7 +240,7 @@ namespace SecondApp
             {
                 Content = "Lägg till",
                 Width = 150,
-                Margin = new Thickness(0, 36, 5, 0),
+                Margin = new Thickness(0, 50, 5, 0),
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             newDiscountPanel.Children.Add(addDiscount);
@@ -309,22 +313,28 @@ namespace SecondApp
 
             //PRODUKTÄNDRINGAR NEDAN.
             //KOLUMN 0 PRODUKT
-            imageWrapPanel = new WrapPanel { Orientation = Orientation.Vertical };
+            imageWrapPanel = new WrapPanel { Orientation = Orientation.Horizontal };
             productGrid.Children.Add(imageWrapPanel);
+            imageWrapPanel.Margin = new Thickness(50, 35, 0, 0);
             Grid.SetColumn(imageWrapPanel, 0);
             Grid.SetRow(imageWrapPanel, 1);
 
-            TextBlock imageLabel = new TextBlock
+            foreach (string line in pictureNames)
             {
-                FontSize = 15,
-                Margin = new Thickness(50, 20, 0, 0),
-                TextAlignment = TextAlignment.Center,
-                //Width = 200,
-                Text = "Bilder: ",
-            };
-            imageWrapPanel.Children.Add(imageLabel);
-            image = AddImage(@"Pictures\tummenupp.jpg");
-            imageWrapPanel.Children.Add(image);
+                Image imageName = AddImage(line);
+                imageName.Width = 35;
+                //imageWrapPanel.Children.Add(imageName);
+
+                checkBox = new RadioButton
+                {
+                    Content = imageName,
+                    Tag = line,
+                    Margin = new Thickness(2),
+                    VerticalAlignment = VerticalAlignment.Bottom,
+                };
+                imageWrapPanel.Children.Add(checkBox);
+                checkBox.Checked += CheckBox_Checked;
+            }
 
 
             //KOLUMN 1 PRODUKT
@@ -401,14 +411,14 @@ namespace SecondApp
             };
             addNewProduct.Children.Add(imageTextBlock);
 
-            TextBox imageBox = new TextBox
+            imageBox = new TextBox
             {
                 Background = Brushes.LightGoldenrodYellow,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(0, 2, 50, 2),
+                Margin = new Thickness(75, 2, 50, 2),
                 TextAlignment = TextAlignment.Left,
                 TextWrapping = TextWrapping.Wrap,
-                Width = 100,
+                Width = 175,
             };
             addNewProduct.Children.Add(imageBox);
 
@@ -485,7 +495,14 @@ namespace SecondApp
             showProductListInEdit.Children.Add(backFromProductEditing);
             backFromProductEditing.Click += ClickedBackFromProduct;
         }
-        
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton checkBox = (RadioButton)sender;
+            string imageName = (string)checkBox.Tag;
+            imageBox.Text = imageName;
+        }
+
         private void AddNewDiscount(object sender, RoutedEventArgs e)
         {
             //Kollar om användaren inte har knappat in en kod eller om längden på koden är mindre än 3 eller större än 20.
@@ -502,15 +519,15 @@ namespace SecondApp
 
             decimal parsedValue;
             string discountCode = addDiscountCode.Text;
-            //Kollar om användaren knappar in siffror. Om inte så visa en MessageBox.
-            if (!decimal.TryParse(addDiscountPercentage.Text, out parsedValue))
+            //Kollar om användaren knappar in siffror. Om inte så visa en MessageBox. Likaså om värdet är <=0 eller >=100
+            if (!decimal.TryParse(addDiscountPercentage.Text, out parsedValue) || parsedValue >= 100 || parsedValue <= 0)
             {
-                MessageBox.Show("Procentmängden behöver matas in i form av siffror.");
+                MessageBox.Show("Procentmängden behöver matas in i form av siffror och får inte vara under 0 eller över 100.");
                 return;
             }
             else
             {
-                parsedValue = parsedValue / 100;
+                parsedValue /= 100;
             }
 
             //Rensar föregående lista när man lägger till så att det inte blir dubbelt av samma lista när användaren lägger till en ny kod.
@@ -676,6 +693,19 @@ namespace SecondApp
             }
         }
 
+        //Read picture names from csv and adding into a temporary list.
+        private List<string> imageNameList()
+        {
+            List<string> temp = new List<string>();
+            string[] imageNames = File.ReadAllLines("pictureNames.csv");
+
+            foreach(string name in imageNames)
+            {
+                temp.Add(name);
+            }
+            return temp;
+        }
+
         private Image AddImage(string filePath)
         {
             ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
@@ -685,7 +715,7 @@ namespace SecondApp
                 Width = 50,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 5, 0, 0)
+                Margin = new Thickness(5)
             };
             // A small rendering tweak to ensure maximum visual appeal.
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
