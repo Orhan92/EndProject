@@ -319,6 +319,7 @@ namespace SecondApp
             Grid.SetColumn(imageWrapPanel, 0);
             Grid.SetRow(imageWrapPanel, 1);
 
+            //Läser in bilderna ur pictureNames.csv och visar de i WrapPanelen.
             foreach (string line in pictureNames)
             {
                 Image imageName = AddImage(line);
