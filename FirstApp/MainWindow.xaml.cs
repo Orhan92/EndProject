@@ -46,6 +46,7 @@ namespace FirstApp
         private List<Discount> discountList;
         private StackPanel descriptionBox, addToChart, discountSum, discount, chartButtons, secondChartButtons, orderPanel;
         private decimal totalSum;
+        private string[] productArray, discountArray;
         public MainWindow()
         {
             InitializeComponent();
@@ -379,41 +380,42 @@ namespace FirstApp
         //Skapar metod för inläsning av produktlistan (csv-fil).
         private void ReadProductList()
         {
-            //Läser in produktlistan ur csv.
-            string[] productArray = File.ReadAllLines("produktLista.csv");
-
-            //Separerar alla ',' och lägger in de i diverse titel.
-            foreach (string line in productArray)
+            //Läser in produktlistan ur csv OM den finns i Temp..
+            try
             {
-                string[] columns = line.Split(',');
-                string productName = columns[0];
-                string productDescription = columns[1];
-                decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
-                string productImage = columns[3];
-
-                //För varje rad i csv filen skapar vi ett nytt objekt av klassen.
-                Product products = new Product(productName, productDescription, productPrice, productImage);
-                //Lägger till objektet i en lista (titelnamn, beskrivning, bild och pris)
-                productList.Add(products);
+                productArray = File.ReadAllLines(@"C:\Windows\Temp\savedEditedProducts.csv");
+                ReadProductListFromCSV(); //Skapat metod för att läsa in csv fil.
             }
-            foreach (Product p in productList)
+            //OM den inte finns i temp så läser jag in från baslistan.
+            catch
             {
-                productListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
+                productArray = File.ReadAllLines("produktLista.csv");
+                ReadProductListFromCSV();
             }
         }
         //Skapar metod för inläsning av rabakkoder (csv-fil).
         private void ReadDiscount()
         {
-            string[] discountArray = File.ReadAllLines("rabattKoder.csv");
-            foreach (string code in discountArray)
+            try
             {
-                string[] columns = code.Split(',');
-                string discountCode = columns[0];
-                decimal discountPercentage = decimal.Parse(columns[1].Replace('.', ','));
-
-                Discount discount = new Discount(discountCode, discountPercentage);
-                discountList.Add(discount);
+                discountArray = File.ReadAllLines(@"C:\Windows\Temp\savedDiscountList.csv");
+                ReadDiscountListFromCSV();
             }
+
+            catch
+            {
+                discountArray = File.ReadAllLines("rabattKoder.csv");
+                ReadDiscountListFromCSV();
+            }
+            //foreach (string code in discountArray)
+            //{
+            //    string[] columns = code.Split(',');
+            //    string discountCode = columns[0];
+            //    decimal discountPercentage = decimal.Parse(columns[1].Replace('.', ','));
+
+            //    Discount discount = new Discount(discountCode, discountPercentage);
+            //    discountList.Add(discount);
+            //}
         }
         private void AddDiscount(object sender, RoutedEventArgs e)
         {
@@ -688,6 +690,40 @@ namespace FirstApp
                     case MessageBoxResult.OK:
                         break;
                 }
+            }
+        }
+        //Skapar metod för att läsa in CSV-filer.
+        private void ReadProductListFromCSV()
+        {
+            //Separerar alla ',' och lägger in de i diverse titel.
+            foreach (string line in productArray)
+            {
+                string[] columns = line.Split(',');
+                string productName = columns[0];
+                string productDescription = columns[1];
+                decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
+                string productImage = columns[3];
+
+                //För varje rad i csv filen skapar vi ett nytt objekt av klassen.
+                Product products = new Product(productName, productDescription, productPrice, productImage);
+                //Lägger till objektet i en lista (titelnamn, beskrivning, bild och pris)
+                productList.Add(products);
+            }
+            foreach (Product p in productList)
+            {
+                productListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
+            }
+        }
+        private void ReadDiscountListFromCSV()
+        {
+            foreach (string code in discountArray)
+            {
+                string[] columns = code.Split(',');
+                string discountCode = columns[0];
+                decimal discountPercentage = decimal.Parse(columns[1].Replace('.', ','));
+
+                Discount discount = new Discount(discountCode, discountPercentage);
+                discountList.Add(discount);
             }
         }
         private Image CreateImage(string filePath)

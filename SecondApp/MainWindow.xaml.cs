@@ -30,6 +30,7 @@ namespace SecondApp
         private TextBlock label;
         private ListBox productListBox, discountListBox;
         private TextBox addDiscountCode, addDiscountPercentage, newTitle, newDescription, newPrice, newImage;
+        private string[] discountArray, productArray;
         public MainWindow()
         {
             InitializeComponent();
@@ -509,7 +510,7 @@ namespace SecondApp
 
             //Denna tar bort det gamla ur listan och gör så att du kan utföra din nya ändring
             productList.RemoveAt(selectedIndex);
-            foreach(Product p in temp)
+            foreach (Product p in temp)
             {
                 newTitle.Text = p.Title;
                 newDescription.Text = p.Description;
@@ -520,27 +521,31 @@ namespace SecondApp
 
         private void ClickedAddNewProduct(object sender, RoutedEventArgs e)
         {
+            //Kollar om titeln redan finns tillagd i produktlistan.
+            foreach(Product name in productList)
+            {
+                if(newTitle.Text == name.Title)
+                {
+                    MessageBox.Show("Artikeln finns redan tillagd.");
+                    return;
+                }
+            }
+
             //Programmet kollar om titelfältet är tomt eller inte.
             if (newTitle.Text == string.Empty)
             {
                 MessageBox.Show("Titelfältet får inte lämnas tomt.");
                 return;
             }
-            else
-            {
-                newTitle.Text = newTitle.Text;
-            }
+            newTitle.Text = newTitle.Text;
 
             //Programmet kollar nu om beskrivningsfältet är tomt eller inte
             if (newDescription.Text == string.Empty)
             {
-                MessageBox.Show("beskrivning får inte lämnas tomt.");
+                MessageBox.Show("Beskrivning får inte lämnas tomt.");
                 return;
             }
-            else
-            {
-                newDescription.Text = newDescription.Text;
-            }
+            newDescription.Text = newDescription.Text;
 
             //Skapar variabler för att lägga in i klass-konstruktorn efter if-satserna.
             string title = newTitle.Text;
@@ -551,13 +556,17 @@ namespace SecondApp
             //Programmet kollar om priset är rätt inmatat / om värdet är mindre än eller = 0 / om boxen står tom.
             if (!decimal.TryParse(newPrice.Text, out parsedValue) || parsedValue <= 0 || newPrice.Text == string.Empty)
             {
-                MessageBox.Show("Priset måste matas in i form av siffror / Priset får inte vara mindre eller like med 0 / Boxen får inte lämnas tom.");
+                MessageBox.Show("Priset måste matas in i form av siffror / Priset får inte vara mindre eller lika med 0 / Boxen får inte lämnas tom.");
                 return;
             }
-            else
+            newPrice.Text = newPrice.Text;
+
+            if(newImage.Text == string.Empty)
             {
-                newPrice.Text = newPrice.Text;
+                MessageBox.Show("Bildfältet får inte lämnas tom. Vänligen kryssa i en bild som du vill använda dig utav.");
+                return;
             }
+            newImage.Text = newImage.Text;
 
             //Rensar föregående lista när man lägger till så att det inte blir dubbelt av samma produkt när användaren lägger till en ny produkt.
             productListBox.Items.Clear();
@@ -569,6 +578,12 @@ namespace SecondApp
             {
                 productListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
             }
+
+            //Tömmer boxarna efter att användaren tryckt på lägg till.
+            newTitle.Text = string.Empty;
+            newDescription.Text = string.Empty;
+            newPrice.Text = string.Empty;
+            newImage.Text = string.Empty;
         }
 
         private void ClickedEditDiscount(object sender, RoutedEventArgs e)
@@ -596,17 +611,23 @@ namespace SecondApp
 
         private void AddNewDiscount(object sender, RoutedEventArgs e)
         {
+            //Kollar om rabattkoden redan finns aktiv.
+            foreach(Discount code in discountList)
+            {
+                if (addDiscountCode.Text.ToUpper() == code.Code)
+                {
+                    MessageBox.Show("Den här rabattkoden är redan aktiv.");
+                    return;
+                }
+            }
             //Kollar om användaren inte har knappat in en kod eller om längden på koden är mindre än 3 eller större än 20.
             if (addDiscountCode.Text == string.Empty || addDiscountCode.Text.Length < 3 || addDiscountCode.Text.Length > 20)
             {
                 MessageBox.Show("Din rabattkod uppfyller inte kriterierna (3-20 tecken).");
-                return;
+                return; //Return så att vi testar villkoret på nytt istället för att gå vidare i metoden.
             }
             //Om användarens rabattkod är giltigt inmatad så gör vi om de till stora bokstäver.
-            else
-            {
-                addDiscountCode.Text = addDiscountCode.Text.ToUpper();
-            }
+            addDiscountCode.Text = addDiscountCode.Text.ToUpper();
 
             decimal parsedValue;
             string discountCode = addDiscountCode.Text;
@@ -616,16 +637,15 @@ namespace SecondApp
                 MessageBox.Show("Procentmängden behöver matas in i form av siffror och får inte vara under 0 eller över 100.");
                 return;
             }
-            else
-            {
-                parsedValue /= 100;
-            }
+            //Om användaren uppfyller villkoret så görs denna beräkning.
+            parsedValue /= 100;
 
             //Rensar föregående lista när man lägger till så att det inte blir dubbelt av samma lista när användaren lägger till en ny kod.
             discountListBox.Items.Clear();
 
             //Lägger in värdena som användaren matat in i TextBoxes och gör om till ett objekt.
             Discount addedDiscount = new Discount(discountCode, parsedValue);
+
             //Lägger till objektet i discountList.
             discountList.Add(addedDiscount);
 
@@ -734,26 +754,16 @@ namespace SecondApp
         {
             productList.Clear();
             productListBox.Items.Clear();
-            //Läser in produktlistan ur csv från huvudprogrammet (FirstApp).
-            string[] productArray = File.ReadAllLines("produktLista.csv");
-
-            //Separerar alla ',' och lägger in de i diverse titel.
-            foreach (string line in productArray)
+            try
             {
-                string[] columns = line.Split(',');
-                string productName = columns[0];
-                string productDescription = columns[1];
-                decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
-                string productImage = columns[3];
-
-                //För varje rad i csv filen skapar vi ett nytt objekt av klassen.
-                Product products = new Product(productName, productDescription, productPrice, productImage);
-                //Lägger till objektet i en lista (titelnamn, beskrivning, bild och pris)
-                productList.Add(products);
+                //Läser in produktlistan ur csv från huvudprogrammet (FirstApp).
+                productArray = File.ReadAllLines(@"C:\Windows\Temp\savedEditedProducts.csv");
+                ReadProductListFromCSV();
             }
-            foreach (Product p in productList)
+            catch
             {
-                productListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
+                productArray = File.ReadAllLines("produktLista.csv");
+                ReadProductListFromCSV();
             }
         }
 
@@ -763,24 +773,16 @@ namespace SecondApp
             discountList.Clear();
             discountListBox.Items.Clear();
 
-            //Läser in produktlistan ur csv från huvudprogrammet (FirstApp).
-            string[] discountArray = File.ReadAllLines("rabattKoder.csv");
-
-            //Separerar alla ',' och lägger in de i diverse titel.
-            foreach (string line in discountArray)
+            try
             {
-                string[] columns = line.Split(',');
-                string discountCode = columns[0];
-                decimal discountPercentage = decimal.Parse(columns[1].Replace('.', ','));
-
-                //För varje rad i csv filen skapar vi ett nytt objekt av klassen.
-                Discount discount = new Discount(discountCode, discountPercentage);
-                //Lägger till objektet i en lista (titelnamn, beskrivning, bild och pris)
-                discountList.Add(discount);
+                //Läser in produktlistan ur csv från huvudprogrammet (FirstApp).
+                discountArray = File.ReadAllLines(@"C:\Windows\Temp\savedDiscountList.csv");
+                ReadDiscountListFromCSV();
             }
-            foreach (Discount d in discountList)
+            catch
             {
-                discountListBox.Items.Add(d.Code + " | " + (d.DiscountPercentage * 100) + "%");
+                discountArray = File.ReadAllLines("rabattKoder.csv");
+                ReadDiscountListFromCSV();
             }
         }
 
@@ -811,6 +813,47 @@ namespace SecondApp
             // A small rendering tweak to ensure maximum visual appeal.
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
             return image;
+        }
+
+        private void ReadProductListFromCSV()
+        {
+            //Separerar alla ',' och lägger in de i diverse titel.
+            foreach (string line in productArray)
+            {
+                string[] columns = line.Split(',');
+                string productName = columns[0];
+                string productDescription = columns[1];
+                decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
+                string productImage = columns[3];
+
+                //För varje rad i csv filen skapar vi ett nytt objekt av klassen.
+                Product products = new Product(productName, productDescription, productPrice, productImage);
+                //Lägger till objektet i en lista (titelnamn, beskrivning, bild och pris)
+                productList.Add(products);
+            }
+            foreach (Product p in productList)
+            {
+                productListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
+            }
+        }
+        private void ReadDiscountListFromCSV()
+        {
+            //Separerar alla ',' och lägger in de i diverse titel.
+            foreach (string line in discountArray)
+            {
+                string[] columns = line.Split(',');
+                string discountCode = columns[0];
+                decimal discountPercentage = decimal.Parse(columns[1].Replace('.', ','));
+
+                //För varje rad i csv filen skapar vi ett nytt objekt av klassen.
+                Discount discount = new Discount(discountCode, discountPercentage);
+                //Lägger till objektet i en lista (titelnamn, beskrivning, bild och pris)
+                discountList.Add(discount);
+            }
+            foreach (Discount d in discountList)
+            {
+                discountListBox.Items.Add(d.Code + " | " + (d.DiscountPercentage * 100) + "%");
+            }
         }
     }
 }

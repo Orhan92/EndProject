@@ -11,6 +11,13 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Pictures\**" />
+	  <EmbeddedResource Remove="Pictures\**" />
+	  <None Remove="Pictures\**" />
+	  <Page Remove="Pictures\**" />
+	</ItemGroup>
 	
   <ItemGroup>
     <None Remove="produktLista.csv" />
