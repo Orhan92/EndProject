@@ -279,6 +279,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Left
             };
             discountPanel.Children.Add(editDiscountButton);
+            editDiscountButton.Click += ClickedEditDiscount;
 
             Button saveDiscount = new Button
             {
@@ -497,6 +498,22 @@ namespace SecondApp
             backFromProductEditing.Click += ClickedBackFromProduct;
         }
 
+        private void ClickedEditDiscount(object sender, RoutedEventArgs e)
+        {
+            List<Discount> temp = new List<Discount>();
+            int selectedIndex = discountListBox.SelectedIndex;
+            Discount discount = discountList[selectedIndex];
+            temp.Add(discount);
+
+            //Denna tar bort det gamla ur listan och gör så att du kan utföra din nya ändring
+            discountList.RemoveAt(selectedIndex);
+            foreach (Discount code in temp)
+            {
+                addDiscountCode.Text = code.Code;
+                addDiscountPercentage.Text = code.DiscountPercentage.ToString();
+            }
+        }
+
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             RadioButton checkBox = (RadioButton)sender;
@@ -543,7 +560,7 @@ namespace SecondApp
             foreach (Discount d in discountList)
             {
                 discountListBox.Items.Add(d.Code + " | " + (d.DiscountPercentage * 100) + "%");
-            }
+            }            
         }
 
         private void ClickedSaveDiscount(object sender, RoutedEventArgs e)
