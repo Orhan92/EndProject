@@ -467,6 +467,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Left
             };
             showProductListInEdit.Children.Add(editProductButton);
+            editProductButton.Click += ClickedEditProduct;
 
             Button saveProduct = new Button
             {
@@ -497,6 +498,24 @@ namespace SecondApp
             };
             showProductListInEdit.Children.Add(backFromProductEditing);
             backFromProductEditing.Click += ClickedBackFromProduct;
+        }
+
+        private void ClickedEditProduct(object sender, RoutedEventArgs e)
+        {
+            List<Product> temp = new List<Product>();
+            int selectedIndex = productListBox.SelectedIndex;
+            Product product = productList[selectedIndex];
+            temp.Add(product);
+
+            //Denna tar bort det gamla ur listan och gör så att du kan utföra din nya ändring
+            productList.RemoveAt(selectedIndex);
+            foreach(Product p in temp)
+            {
+                newTitle.Text = p.Title;
+                newDescription.Text = p.Description;
+                newPrice.Text = p.Price.ToString();
+                newImage.Text = p.Image;
+            }
         }
 
         private void ClickedAddNewProduct(object sender, RoutedEventArgs e)
