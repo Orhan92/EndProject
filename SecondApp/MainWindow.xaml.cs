@@ -29,7 +29,7 @@ namespace SecondApp
         private WrapPanel imageWrapPanel;
         private TextBlock label;
         private ListBox productListBox, discountListBox;
-        private TextBox newPrice, addDiscountCode, addDiscountPercentage, imageBox;
+        private TextBox addDiscountCode, addDiscountPercentage, newTitle, newDescription, newPrice, newImage;
         public MainWindow()
         {
             InitializeComponent();
@@ -354,7 +354,7 @@ namespace SecondApp
             };
             addNewProduct.Children.Add(titleLabel);
 
-            TextBox newTitle = new TextBox
+            newTitle = new TextBox
             {
                 Background = Brushes.LightGoldenrodYellow,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -372,7 +372,7 @@ namespace SecondApp
             };
             addNewProduct.Children.Add(descriptionLabel);
 
-            TextBox newDescription = new TextBox
+            newDescription = new TextBox
             {
                 Background = Brushes.LightGoldenrodYellow,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -404,16 +404,16 @@ namespace SecondApp
             };
             addNewProduct.Children.Add(newPrice);
 
-            TextBlock imageTextBlock = new TextBlock
+            TextBlock imageLabel = new TextBlock
             {
                 FontSize = 15,
                 Margin = new Thickness(12, 5, 95, 0),
                 TextAlignment = TextAlignment.Center,
                 Text = "Bildnamn: ",
             };
-            addNewProduct.Children.Add(imageTextBlock);
+            addNewProduct.Children.Add(imageLabel);
 
-            imageBox = new TextBox
+            newImage = new TextBox
             {
                 Background = Brushes.LightGoldenrodYellow,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -422,7 +422,7 @@ namespace SecondApp
                 TextWrapping = TextWrapping.Wrap,
                 Width = 175,
             };
-            addNewProduct.Children.Add(imageBox);
+            addNewProduct.Children.Add(newImage);
 
             Button addNewProductButton = new Button
             {
@@ -432,6 +432,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             addNewProduct.Children.Add(addNewProductButton);
+            addNewProductButton.Click += ClickedAddNewProduct;
 
             //KOLUMN 2 PRODUKT
             showProductListInEdit = new StackPanel { Orientation = Orientation.Vertical };
@@ -498,6 +499,59 @@ namespace SecondApp
             backFromProductEditing.Click += ClickedBackFromProduct;
         }
 
+        private void ClickedAddNewProduct(object sender, RoutedEventArgs e)
+        {
+            //Programmet kollar om titelfältet är tomt eller inte.
+            if (newTitle.Text == string.Empty)
+            {
+                MessageBox.Show("Titelfältet får inte lämnas tomt.");
+                return;
+            }
+            else
+            {
+                newTitle.Text = newTitle.Text;
+            }
+
+            //Programmet kollar nu om beskrivningsfältet är tomt eller inte
+            if (newDescription.Text == string.Empty)
+            {
+                MessageBox.Show("beskrivning får inte lämnas tomt.");
+                return;
+            }
+            else
+            {
+                newDescription.Text = newDescription.Text;
+            }
+
+            //Skapar variabler för att lägga in i klass-konstruktorn efter if-satserna.
+            string title = newTitle.Text;
+            string description = newDescription.Text;
+            decimal parsedValue;
+            string imageName = newImage.Text;
+
+            //Programmet kollar om priset är rätt inmatat / om värdet är mindre än eller = 0 / om boxen står tom.
+            if (!decimal.TryParse(newPrice.Text, out parsedValue) || parsedValue <= 0 || newPrice.Text == string.Empty)
+            {
+                MessageBox.Show("Priset måste matas in i form av siffror / Priset får inte vara mindre eller like med 0 / Boxen får inte lämnas tom.");
+                return;
+            }
+            else
+            {
+                newPrice.Text = newPrice.Text;
+            }
+
+            //Rensar föregående lista när man lägger till så att det inte blir dubbelt av samma produkt när användaren lägger till en ny produkt.
+            productListBox.Items.Clear();
+
+            Product addedProduct = new Product(title, description, parsedValue, imageName);
+            productList.Add(addedProduct);
+
+            foreach (Product p in productList)
+            {
+                productListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
+            }
+        }
+
         private void ClickedEditDiscount(object sender, RoutedEventArgs e)
         {
             List<Discount> temp = new List<Discount>();
@@ -518,7 +572,7 @@ namespace SecondApp
         {
             RadioButton checkBox = (RadioButton)sender;
             string imageName = (string)checkBox.Tag;
-            imageBox.Text = imageName;
+            newImage.Text = imageName;
         }
 
         private void AddNewDiscount(object sender, RoutedEventArgs e)
@@ -560,7 +614,7 @@ namespace SecondApp
             foreach (Discount d in discountList)
             {
                 discountListBox.Items.Add(d.Code + " | " + (d.DiscountPercentage * 100) + "%");
-            }            
+            }
         }
 
         private void ClickedSaveDiscount(object sender, RoutedEventArgs e)
@@ -717,7 +771,7 @@ namespace SecondApp
             List<string> temp = new List<string>();
             string[] imageNames = File.ReadAllLines("pictureNames.csv");
 
-            foreach(string name in imageNames)
+            foreach (string name in imageNames)
             {
                 temp.Add(name);
             }

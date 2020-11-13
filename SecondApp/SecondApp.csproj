@@ -11,10 +11,14 @@
     <None Remove="Pictures\angrysmiley.jpg" />
     <None Remove="Pictures\confusedsmiley.jpg" />
     <None Remove="Pictures\cryingsmiley.jpg" />
+    <None Remove="Pictures\dancingsmiley.jpg" />
     <None Remove="Pictures\happysmiley.jpg" />
     <None Remove="Pictures\hjartsmiley.jpg" />
+    <None Remove="Pictures\karatesmiley.jpg" />
     <None Remove="Pictures\laughingsmiley.jpg" />
     <None Remove="Pictures\sadsmiley.jpg" />
+    <None Remove="Pictures\sillysmiley.jpg" />
+    <None Remove="Pictures\singingsmiley.jpg" />
     <None Remove="Pictures\tummenner.jpg" />
     <None Remove="Pictures\tummenupp.jpg" />
     <None Remove="Pictures\vomitsmiley.jpg" />
@@ -33,16 +37,28 @@
     <Content Include="Pictures\cryingsmiley.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Pictures\dancingsmiley.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Pictures\happysmiley.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Pictures\hjartsmiley.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Pictures\karatesmiley.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Pictures\laughingsmiley.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Pictures\sadsmiley.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Pictures\sillysmiley.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Pictures\singingsmiley.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Pictures\tummenner.jpg">
