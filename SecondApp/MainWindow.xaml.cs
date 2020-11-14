@@ -172,6 +172,7 @@ namespace SecondApp
             userChoice.Children.Add(exitProgram);
             exitProgram.Click += ClickedExit;
 
+
             //RABATTÄNDRINGAR
             //KOLUMN 0 står tom.
             //KOLUMN 1 RABATT
@@ -239,6 +240,7 @@ namespace SecondApp
             };
             newDiscountPanel.Children.Add(addDiscount);
             addDiscount.Click += AddNewDiscount;
+
 
             //KOLUMN 2 RABATT
             discountPanel = new StackPanel { Orientation = Orientation.Vertical };
@@ -721,6 +723,7 @@ namespace SecondApp
             discountGrid.Visibility = Visibility.Visible;
 
             ReadDiscountList();
+
         }
 
         private void ClickedBackFromProduct(object sender, RoutedEventArgs e)
