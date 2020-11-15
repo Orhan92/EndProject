@@ -506,34 +506,48 @@ namespace SecondApp
         //Edit
         private void ClickedEditProduct(object sender, RoutedEventArgs e)
         {
-            List<Product> temp = new List<Product>();
-            int selectedIndex = productListBox.SelectedIndex;
-            Product product = productList[selectedIndex];
-            temp.Add(product);
-
-            //Denna tar bort det gamla ur listan och gör så att du kan utföra din nya ändring
-            productList.RemoveAt(selectedIndex);
-            foreach (Product p in temp)
+            try
             {
-                newTitle.Text = p.Title;
-                newDescription.Text = p.Description;
-                newPrice.Text = p.Price.ToString();
-                newImage.Text = p.Image;
+                List<Product> temp = new List<Product>();
+                int selectedIndex = productListBox.SelectedIndex;
+                Product product = productList[selectedIndex];
+                temp.Add(product);
+
+                //Denna tar bort det gamla ur listan och gör så att du kan utföra din nya ändring
+                productList.RemoveAt(selectedIndex);
+                foreach (Product p in temp)
+                {
+                    newTitle.Text = p.Title;
+                    newDescription.Text = p.Description;
+                    newPrice.Text = p.Price.ToString();
+                    newImage.Text = p.Image;
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Vänligen markera produkt som du vill ändra.");
             }
         }
         private void ClickedEditDiscount(object sender, RoutedEventArgs e)
         {
-            List<Discount> temp = new List<Discount>();
-            int selectedIndex = discountListBox.SelectedIndex;
-            Discount discount = discountList[selectedIndex];
-            temp.Add(discount);
-
-            //Denna tar bort det gamla ur listan och gör så att du kan utföra din nya ändring
-            discountList.RemoveAt(selectedIndex);
-            foreach (Discount code in temp)
+            try
             {
-                addDiscountCode.Text = code.Code;
-                addDiscountPercentage.Text = code.DiscountPercentage.ToString();
+                List<Discount> temp = new List<Discount>();
+                int selectedIndex = discountListBox.SelectedIndex;
+                Discount discount = discountList[selectedIndex];
+                temp.Add(discount);
+
+                //Denna tar bort det gamla ur listan och gör så att du kan utföra din nya ändring
+                discountList.RemoveAt(selectedIndex);
+                foreach (Discount code in temp)
+                {
+                    addDiscountCode.Text = code.Code;
+                    addDiscountPercentage.Text = code.DiscountPercentage.ToString();
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Vänligen markera rabattkod som du vill ändra.");
             }
         }
 
@@ -707,21 +721,35 @@ namespace SecondApp
         //Remove
         private void ClickedRemoveDiscount(object sender, RoutedEventArgs e)
         {
-            //Tar bort den markerade raden ur ListBoxen som visar 'Aktiva Rabattkoder'
-            int selectedIndex = discountListBox.SelectedIndex;
-            discountListBox.Items.RemoveAt(selectedIndex);
+            try
+            {
+                //Tar bort den markerade raden ur ListBoxen som visar 'Aktiva Rabattkoder'
+                int selectedIndex = discountListBox.SelectedIndex;
+                discountListBox.Items.RemoveAt(selectedIndex);
 
-            //Tar bort den markerade raden ur listan.
-            discountList.RemoveAt(selectedIndex);
+                //Tar bort den markerade raden ur listan.
+                discountList.RemoveAt(selectedIndex);
+            }
+            catch
+            {
+                MessageBox.Show("Vänligen markera rabattkod som du vill ta bort.");
+            }
         }
         private void ClickedRemoveProduct(object sender, RoutedEventArgs e)
         {
-            //Tar bort den markerade raden ur ListBoxen som visar 'Produktlista'
-            int selectedIndex = productListBox.SelectedIndex;
-            productListBox.Items.RemoveAt(selectedIndex);
+            try
+            {
+                //Tar bort den markerade raden ur ListBoxen som visar 'Produktlista'
+                int selectedIndex = productListBox.SelectedIndex;
+                productListBox.Items.RemoveAt(selectedIndex);
 
-            //Tar bort den markerade raden ur listan.
-            productList.RemoveAt(selectedIndex);
+                //Tar bort den markerade raden ur listan.
+                productList.RemoveAt(selectedIndex);
+            }
+            catch
+            {
+                MessageBox.Show("Vänligen markera produkt som du vill ta bort.");
+            }
         }
 
         //Startscreen options Discount / And back from Startscreen
