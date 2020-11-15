@@ -747,7 +747,7 @@ namespace FirstApp
             }
             return false;
         }
-        public static List<Product> ReadProductListUtanGUI()
+        public static List<Product> ReadProductListWithoutGUI()
         {
             //Skapade en lista för att skicka till min unit test
             var unitTestList = new List<Product>();

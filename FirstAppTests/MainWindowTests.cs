@@ -14,7 +14,7 @@ namespace FirstApp.Tests
         [TestMethod()]
         public void CheckingSavedCart()
         {
-            //Kollar om det finns någon produkt i varukorgen
+            //Kollar om det finns någon produkt i den sparade varukorgen
             //act
             var result = MainWindow.SaveToCsvCart("Mineral vatten, Gott med äkta mineral vatten, 6, Bonaqua.png");
 
@@ -28,27 +28,37 @@ namespace FirstApp.Tests
         [TestMethod()]
         public void CreateProduct()
         {
-            // Testar kontruktor
+            //Testar Product kontruktor
             var product = new Product("Mineral vatten", "Gott med äkta mineral vatten", 6, "Bonaqua.png");
 
             Assert.AreEqual("Mineral vatten", product.Title);
             Assert.AreEqual("Gott med äkta mineral vatten", product.Description);
             Assert.AreEqual(6, product.Price);
             Assert.AreEqual("Bonaqua.png", product.Image);
-
         }
 
         [TestMethod()]
-        public void ReadProductListCount()
+        public void CreateDiscount()
         {
-            var productTestResult = MainWindow.ReadProductListUtanGUI();
+            //Testar discount konstruktor
+            var discount = new Discount("Mamma", 25);
+
+            Assert.AreEqual("Mamma", discount.Code);
+            Assert.AreEqual(25, discount.DiscountPercentage);
+        }
+
+        [TestMethod()]
+        public void ReadProductCount()
+        {
+            //Kollar hur många rader Produkter som finns i CSV.
+            var productTestResult = MainWindow.ReadProductListWithoutGUI();
             Assert.AreEqual(10, productTestResult.Count);
         }
 
-        //Kolla hur många rader rabattkoder som finns i CSV.
         [TestMethod()]
         public void ReadDiscountCount()
         {
+            //Kolla hur många rader rabattkoder som finns i CSV.
             var discountTestResult = MainWindow.ReadDiscountTest();
 
             Assert.AreEqual(4, discountTestResult.Count);
