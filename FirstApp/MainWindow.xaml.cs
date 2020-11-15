@@ -84,7 +84,8 @@ namespace FirstApp
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(300) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-            //LISTOR
+            //LISTOR*****************************************************************
+
             //lägger in samtliga objekt ur csv 
             productList = new List<Product>();
 
@@ -92,10 +93,11 @@ namespace FirstApp
             discountList = new List<Discount>(); 
 
             //Lägger in tillagda artiklar från productList hit.
-            cartList = new List<Product>();  //Dokumentera om denna delen, att det var svårt att förstå att jag behövde lägga in saker från listProducts in i en ny lista (den här listan) för att kunna manipulera den i chartListBox.
+            cartList = new List<Product>();  
 
 
-            //KOLUMN 0
+            //KOLUMN 0****************************************************************
+
             productListLabel = new TextBlock //Detta är titeln som står högst upp "Produktlista"
             {
                 FontSize = 20,
@@ -119,14 +121,15 @@ namespace FirstApp
             grid.Children.Add(productListBox);
             Grid.SetColumn(productListBox, 0);
             Grid.SetRow(productListBox, 1);
-            //lägger in titeln och priset för varje objekt av Product klassen utifrån csv fil in i en produktlistan som visas i vänster kolumn för användaren.
 
-            addToChart = new StackPanel { Orientation = Orientation.Horizontal }; //Denna StackPanel är skapad för info och lägg till knapparna.
+            //Denna StackPanel är skapad för info och lägg till knapparna.
+            addToChart = new StackPanel { Orientation = Orientation.Horizontal }; 
             grid.Children.Add(addToChart);
             Grid.SetRow(addToChart, 2);
             Grid.SetColumn(addToChart, 0);
 
-            addItem = new Button //Denna knapp ska lägga till den markerade artikeln i varukorgen
+            //Denna knapp ska lägga till den markerade artikeln i varukorgen
+            addItem = new Button 
             {
                 Content = "Lägg till",
                 Width = 100,
@@ -145,13 +148,14 @@ namespace FirstApp
             addToChart.Children.Add(productInfo);
             productInfo.Click += ClickedInfo;
 
-            //läser in produktlistan.
+            //läser in produktlistan. Se metod för funktion.
             ReadProductList();
 
 
 
             //KOLUMN 1 ************************************************************************
-            productDescritpion = new TextBlock //Detta är titeln som står högst upp "Produktbeskrivning"
+            //Detta är titeln som visas högst upp i kolumnen "Produktbeskrivning"
+            productDescritpion = new TextBlock 
             {
                 FontSize = 20,
                 Margin = new Thickness(2),
@@ -163,12 +167,14 @@ namespace FirstApp
             Grid.SetColumn(productDescritpion, 1);
             Grid.SetRow(productDescritpion, 0);
 
+            //Stackpanel för beskrivning och bild.
             descriptionBox = new StackPanel { Orientation = Orientation.Vertical };
             grid.Children.Add(descriptionBox);
             Grid.SetColumn(descriptionBox, 1);
             Grid.SetRow(descriptionBox, 1);
 
-            image = CreateImage(@"Images\ost.jpg"); //Denna är hidden så att den inte syns vid programmets start.
+            //Denna är hidden så att den inte syns vid programmets start.
+            image = CreateImage(@"Images\ost.jpg"); 
 
             productDescription = new TextBlock
             {
@@ -181,15 +187,16 @@ namespace FirstApp
             };
             descriptionBox.Children.Add(productDescription);
 
-            //KOLUMN 1, VID BESTÄLLNING ****************************************************************
-            //Allt inuti orderPanel förblir 'Collapsed' för att hållas osynlig tills en beställning görs av användaren.
+            //KOLUMN 1 VID BESTÄLLNING *************************************************
+
+            //orderPanel förblir 'Collapsed' för att hållas osynlig tills användaren klickar "Beställ"
             orderPanel = new StackPanel { Orientation = Orientation.Vertical };
             grid.Children.Add(orderPanel);
             Grid.SetColumn(orderPanel, 1);
             Grid.SetRow(orderPanel, 2);
             orderPanel.Visibility = Visibility.Collapsed;
 
-            //Beställda varukorgen
+            //Beställda varor i varukorgen visas i denna ListBox
             orderedProductListBox = new ListBox
             {
                 Background = Brushes.AliceBlue,
@@ -199,6 +206,7 @@ namespace FirstApp
             };
             orderPanel.Children.Add(orderedProductListBox);
 
+            //Vi visar användaren totalsumman på ordervärdet.
             orderSum = new TextBlock //Summan vid order
             {
                 Text = "Summa: ",
@@ -216,7 +224,8 @@ namespace FirstApp
             Grid.SetColumn(discount, 1);
             discount.Visibility = Visibility.Collapsed;
 
-            addDiscount = new Button //Här är knappen för att lägga till rabattkoden till varukorgen
+            //Här är knappen för att lägga till rabattkoden till varukorgen
+            addDiscount = new Button 
             {
                 Content = "Lägg till",
                 Width = 50,
@@ -225,7 +234,8 @@ namespace FirstApp
             discount.Children.Add(addDiscount);
             addDiscount.Click += AddDiscount;
 
-            discountBox = new TextBox //Inuti denna boxen matar användaren in rabattkoden
+            //Inuti denna boxen matar användaren in rabattkoden
+            discountBox = new TextBox 
             {
                 Foreground = Brushes.Gray,
                 Background = Brushes.LightGoldenrodYellow,
@@ -237,7 +247,8 @@ namespace FirstApp
             discount.Children.Add(discountBox);
             discountBox.GotFocus += DiscountBoxHasBeenClicked;
 
-            backFromOrder = new Button //Här är knappen för att lägga till rabattkoden till varukorgen
+            //Här är knappen för att lämna orderfönstret och gå tillbaka till beställ-fönstret.
+            backFromOrder = new Button 
             {
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Content = "Tillbaka",
@@ -252,8 +263,9 @@ namespace FirstApp
 
 
 
-            //KOLUMN 2,****************************************************************************************
-            chart = new TextBlock //Detta är titeln som står högst upp "Varukorgen"
+            //KOLUMN 2,************************************************************************
+            //Detta är titeln som står högst upp "Varukorgen"
+            chart = new TextBlock 
             {
                 FontSize = 20,
                 Margin = new Thickness(2),
@@ -293,6 +305,7 @@ namespace FirstApp
             };
             discountSum.Children.Add(totalSumLabelInChart);
 
+            //För att visa totalpriset i varukorgen.
             chartSumLabel = new TextBlock
             {
                 Foreground = Brushes.ForestGreen,
@@ -301,13 +314,14 @@ namespace FirstApp
             };
             discountSum.Children.Add(chartSumLabel);
 
-            //stackPanel under stackPanelen ovan (Rad: 295).
+            //stackPanel för knappar under varukorgen.
             chartButtons = new StackPanel { Orientation = Orientation.Horizontal };
             grid.Children.Add(chartButtons);
             Grid.SetRow(chartButtons, 4);
             Grid.SetColumn(chartButtons, 2);
 
-            removeItem = new Button //Ta bort enskild vald produkt från varukorgen.
+            //Ta bort enskild vald produkt från varukorgen.
+            removeItem = new Button 
             {
                 Content = "Ta bort",
                 Width = 100,
@@ -316,7 +330,8 @@ namespace FirstApp
             chartButtons.Children.Add(removeItem);
             removeItem.Click += ClickedRemove;
 
-            saveChart = new Button //Spara varukorgen till en csv fil i temp mappen.
+            //Spara varukorgen till en csv fil i temp mappen.
+            saveChart = new Button 
             {
                 Content = "Spara",
                 Width = 100,
@@ -325,13 +340,14 @@ namespace FirstApp
             chartButtons.Children.Add(saveChart);
             saveChart.Click += ClickedSaveChart;
 
-            //En till stackpanel under stackPanel ovan.
+            //Stackpanel för knappar under varukorgen
             secondChartButtons = new StackPanel { Orientation = Orientation.Horizontal };
             grid.Children.Add(secondChartButtons);
             Grid.SetRow(secondChartButtons, 5);
             Grid.SetColumn(secondChartButtons, 2);
 
-            emptyChart = new Button //Tömmer hela varukorgen, och nollställer programmet.
+            //Tömmer hela varukorgen, och nollställer programmet.
+            emptyChart = new Button 
             {
                 Content = "Töm",
                 Width = 100,
@@ -340,7 +356,8 @@ namespace FirstApp
             secondChartButtons.Children.Add(emptyChart);
             emptyChart.Click += ClickedEmptyAll;
 
-            order = new Button //Lägg en beställning med valda produkter och vald rabatt.
+            //För att beställa tillagda artiklar
+            order = new Button 
             {
                 Content = "Beställ",
                 Width = 100,
@@ -349,11 +366,10 @@ namespace FirstApp
             secondChartButtons.Children.Add(order);
             order.Click += ClickedOrder;
 
-            //Läser in sparad varukorg.
+            //Läser in sparad varukorg när programmet startas.
             ReadSavedChart();
         }
 
-        //Skapar dessa "Read"-metoder för att enkelt kunna testa dem.
         //Skapar en metod för inläsning av sparad varukorg (csv-fil).
         private void ReadSavedChart()
         {
@@ -382,7 +398,8 @@ namespace FirstApp
                 chartSumLabel.Text = totalSum.ToString("C");
             }
         }
-        //Skapar metod för inläsning av produktlistan (csv-fil).
+
+        //METODER som kollar om vi har en sparad CSV fil, om inte så hämtar vi "original"-filen.
         private void ReadProductList()
         {
             //Läser in produktlistan ur csv OM den finns i Temp..
@@ -391,31 +408,34 @@ namespace FirstApp
                 productArray = File.ReadAllLines(@"C:\Windows\Temp\savedEditedProducts.csv");
                 ReadProductListFromCSV(); //Skapat metod för att läsa in csv fil.
             }
-            //OM den inte finns i temp så läser jag in från baslistan.
+
+            //Om den INTE finns i Temp så läser vi in från "programmets" csv-fil.
             catch
             {
                 productArray = File.ReadAllLines("produktLista.csv");
                 ReadProductListFromCSV();
             }
         }
-        //Skapar metod för inläsning av rabakkoder (csv-fil).
         private void ReadDiscount()
         {
+            //Läser in rabattlistan ur csv OM den finns i Temp..
             try
             {
                 discountArray = File.ReadAllLines(@"C:\Windows\Temp\savedDiscountList.csv");
                 ReadDiscountListFromCSV();
             }
 
+            //Om den INTE finns i Temp så läser vi in från "programmets" csv-fil.
             catch
             {
                 discountArray = File.ReadAllLines("rabattKoder.csv");
                 ReadDiscountListFromCSV();
             }
         }
+
+        //METODER FÖR KNAPPTRYCK.
         private void AddDiscount(object sender, RoutedEventArgs e)
         {
-            //Dokumentera om denna delen.. Den var sjukt jobbig att få till.
             //Rensar rabattlistan och läser in den på nytt här nedan.
             discountList.Clear();
 
@@ -434,7 +454,7 @@ namespace FirstApp
 
                     orderedProductListBox.Items.Clear();
 
-                    //deklarerar och initierar ordinaryPrice endast för att kunna skriva ut tidigare ord.pris för användaren.
+                    //Deklarerar/initierar ordinaryPrice för att kunna skriva ut tidigare ord.pris för användaren.
                     decimal ordinaryPrice = 0;
                     foreach (Product x in cartList)
                     {
@@ -464,6 +484,8 @@ namespace FirstApp
                 hasBeenClicked = true;
             }
         }
+
+        //TILLBAKA FRÅN ORDER / ORDER
         private void BackFromOrderClick(object sender, RoutedEventArgs e)
         {
             //Kolumn 0: Gör hela Visible,
@@ -511,25 +533,22 @@ namespace FirstApp
         private void ClickedOrder(object sender, RoutedEventArgs e)
         {
             //Kolumn 0: Vi vill Collapsa/Dölja denna när användaren trycker på "Beställ"
-            //Notera att titeln/rubriken inte är Collapsed då vi gör strängen empty. (Rad: 525)
             productListBox.Visibility = Visibility.Collapsed;
             addToChart.Visibility = Visibility.Collapsed;
 
             //Kolumn 1: Vi gömmer det som visas i denna kolumnen vid programmets start och uppdaterar med ny information.
-            //Notera att titeln/rubriken inte är Collapsed då vi ändrar på strängens innehåll (Rad: 526)
             descriptionBox.Visibility = Visibility.Collapsed;
             image.Visibility = Visibility.Collapsed;
 
             //Kolumn 1: Uppdaterad information när användaren klickat på "Beställ"
             orderPanel.Visibility = Visibility.Visible;
             discount.Visibility = Visibility.Visible;
-            saveChart.Visibility = Visibility.Visible; //Denna rad visas inte trots att 'discount' (x) är Visible därav denna kod. 
-            discountBox.Visibility = Visibility.Visible; //Denna rad visas inte trots att 'discount' (x) är Visible därav denna kod.
-            addDiscount.Visibility = Visibility.Visible; //Denna rad visas inte trots att 'discount' (x) är Visible därav denna kod.
+            saveChart.Visibility = Visibility.Visible; 
+            discountBox.Visibility = Visibility.Visible; 
+            addDiscount.Visibility = Visibility.Visible; 
             backFromOrder.Visibility = Visibility.Visible;
 
             //Kolumn 2: Collapsar/Döljer även denna vid beställning.
-            //Notera att titeln/rubriken inte är collapsed då vi gör strängen empty (Rad: 527)
             chartListBox.Visibility = Visibility.Collapsed;
             discountSum.Visibility = Visibility.Collapsed;
             chartButtons.Visibility = Visibility.Collapsed;
@@ -552,6 +571,8 @@ namespace FirstApp
                 orderedProductListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
             }
         }
+
+        //TÖM / TA BORT
         private void ClickedEmptyAll(object sender, RoutedEventArgs e)
         {
             MessageBoxResult warning = MessageBox.Show("Är du säker att du vill tömma varukorgen?", "Varning!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
@@ -580,15 +601,17 @@ namespace FirstApp
         {
             try
             {
+                //Tar bort den markerade raden i varukorgen. SelectedIndex; för att veta vilken produkt.
                 int foodIndex = chartListBox.SelectedIndex;
                 chartListBox.Items.RemoveAt(foodIndex);
 
-                //Dokumentera om denna delen, att den var sjukt svår.
+                //Tar bort objektet i varukorgen och priset för objektet i totalSum.
                 Product product = cartList[foodIndex];
                 totalSum -= product.Price;
                 chartSumLabel.Text = totalSum.ToString("C");
                 //"C" Sätter currency baserat på valutan i ditt land. I mitt fall "kr"
 
+                //Tar bort objektet från varukorgsListan.
                 cartList.RemoveAt(foodIndex);
             }
             catch
@@ -601,9 +624,11 @@ namespace FirstApp
                 }
             }
         }
+
+        //SPARA / LÄGG TILL / INFO
         private void ClickedSaveChart(object sender, RoutedEventArgs e)
         {
-            //Sparar varukorgen när användaren trycker på "Spara"
+            //Sparar varukorgen i Temp mappen när användaren trycker på "Spara"
             var csv = new StringBuilder();
             foreach (Product product in cartList)
             {
@@ -632,10 +657,12 @@ namespace FirstApp
                 image.Visibility = Visibility.Hidden;
                 productDescription.Visibility = Visibility.Hidden;
 
-                //Dokumentera om denna delen, att den var sjukt svår.
+                //Rensar ListBoxen som visar upp varukorgen för användaren.
+                //Detta för att undvika dubletter av listan som visas för användaren.
                 chartListBox.Items.Clear();
                 int selectedIndex = productListBox.SelectedIndex;
 
+                //Lägger till den markerade produkten från productList in till cartList.
                 Product product = productList[selectedIndex];
                 cartList.Add(product);
 
@@ -671,12 +698,13 @@ namespace FirstApp
                 int selectedIndex = productListBox.SelectedIndex;
                 string path = @"Images\" + productList[selectedIndex].Image;
 
-                productDescription.Text = productList[selectedIndex].Description;
-                productDescription.Visibility = Visibility.Visible;
-
+                //Visar bilden.
                 image.Source = new BitmapImage(new Uri(path, UriKind.Relative));
                 image.Visibility = Visibility.Visible;
 
+                //Visar produktbeskrivning.
+                productDescription.Text = productList[selectedIndex].Description;
+                productDescription.Visibility = Visibility.Visible;
             }
             catch
             {
@@ -688,7 +716,8 @@ namespace FirstApp
                 }
             }
         }
-        //Skapar metod för att läsa in CSV-filer.
+
+        //METODER FÖR ATT LÄSA IN CSV-FILER
         private void ReadProductListFromCSV()
         {
             //Separerar alla ',' och lägger in de i diverse titel.
@@ -702,6 +731,7 @@ namespace FirstApp
 
                 //För varje rad i csv filen skapar vi ett nytt objekt av klassen.
                 Product products = new Product(productName, productDescription, productPrice, productImage);
+
                 //Lägger till objektet i en lista (titelnamn, beskrivning, bild och pris)
                 productList.Add(products);
             }
