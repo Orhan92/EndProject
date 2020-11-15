@@ -24,6 +24,7 @@ namespace FirstApp
             Image = pictures;
         }
     }
+
     public class Discount
     {
         public string Code;
@@ -407,15 +408,6 @@ namespace FirstApp
                 discountArray = File.ReadAllLines("rabattKoder.csv");
                 ReadDiscountListFromCSV();
             }
-            //foreach (string code in discountArray)
-            //{
-            //    string[] columns = code.Split(',');
-            //    string discountCode = columns[0];
-            //    decimal discountPercentage = decimal.Parse(columns[1].Replace('.', ','));
-
-            //    Discount discount = new Discount(discountCode, discountPercentage);
-            //    discountList.Add(discount);
-            //}
         }
         private void AddDiscount(object sender, RoutedEventArgs e)
         {
@@ -743,5 +735,91 @@ namespace FirstApp
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
             return image;
         }
+
+
+        //STATIC METODER FÖR TESTING
+        public static bool SaveToCsvCart(string csv)
+        {
+            if (!string.IsNullOrEmpty(csv))
+            {
+                File.WriteAllText(@"C:\Windows\Temp\savedChart.csv", csv);
+                return true;
+            }
+            return false;
+        }
+        public static List<Product> ReadProductListUtanGUI()
+        {
+            //Skapade en lista för att skicka till min unit test
+            var unitTestList = new List<Product>();
+
+            //Läser in produktlistan ur csv.
+            string[] productArray = File.ReadAllLines("produktLista.csv");
+
+            //Separerar alla ',' och lägger in de i diverse titel.
+            foreach (string line in productArray)
+            {
+                string[] columns = line.Split(',');
+                string productName = columns[0];
+                string productDescription = columns[1];
+                decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
+                string productImage = columns[3];
+
+                //För varje rad i csv filen skapar vi ett nytt objekt av klassen.
+                var products = new Product(productName, productDescription, productPrice, productImage);
+
+                unitTestList.Add(products);
+            }
+            return unitTestList;
+        }
+        public static List<Discount> ReadDiscountTest()
+        {
+            var unitTestDiscountList = new List<Discount>();
+            string[] discountArray = File.ReadAllLines("rabattKoder.csv");
+
+            foreach (string code in discountArray)
+            {
+                string[] columns = code.Split(',');
+                string discountCode = columns[0];
+                decimal discountPercentage = decimal.Parse(columns[1].Replace('.', ','));
+
+                Discount discount = new Discount(discountCode, discountPercentage);
+                unitTestDiscountList.Add(discount);
+            }
+
+            return unitTestDiscountList;
+        }
+        public static List<Product> ReadSavedChartTest()
+        {
+            //kod som läser om filen
+            //lägger till listan
+            // och gör dem til product objekt
+
+            //Denna för att skapa filen "savedChart.csv" i temp mappen. Skapar en tom csv fil med namnet savedChart.csv. 
+            File.AppendAllText(@"C:\Windows\Temp\savedChart.csv", string.Empty);
+            //Läser in den sparade varukorgen.
+            string[] savedChart = File.ReadAllLines(@"C:\Windows\Temp\savedChart.csv");
+
+            var testList = new List<Product>();
+
+            var savedProduct = new Product("", "", 0, "");
+            foreach (string line in savedChart)
+            {
+                string[] columns = line.Split(',');
+                string productName = columns[0];
+                string productDescription = columns[1];
+                decimal productPrice = decimal.Parse(columns[2].Replace('.', ','));
+                string productPicture = columns[3];
+
+                savedProduct = new Product(productName, productDescription, productPrice, productPicture);
+
+                //var mainWindow = new MainWindow();
+
+                //mainWindow.GUIExtra(savedProduct);
+
+                testList.Add(savedProduct);
+            }
+            return testList;
+        }
+
     }
 }

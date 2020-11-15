@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstApp", "FirstApp\FirstA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecondApp", "SecondApp\SecondApp.csproj", "{7DD152CF-7269-4D63-AD81-70ECFA6DB2A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstAppTests", "FirstAppTests\FirstAppTests.csproj", "{B2100197-9AA6-4FFB-BE99-5282EA0D5904}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7DD152CF-7269-4D63-AD81-70ECFA6DB2A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DD152CF-7269-4D63-AD81-70ECFA6DB2A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DD152CF-7269-4D63-AD81-70ECFA6DB2A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2100197-9AA6-4FFB-BE99-5282EA0D5904}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2100197-9AA6-4FFB-BE99-5282EA0D5904}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2100197-9AA6-4FFB-BE99-5282EA0D5904}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2100197-9AA6-4FFB-BE99-5282EA0D5904}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

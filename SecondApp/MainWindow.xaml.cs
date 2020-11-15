@@ -117,6 +117,7 @@ namespace SecondApp
 
             discountList = new List<Discount>();
             productList = new List<Product>();
+
             //pictureNames innehåller relativ sökväg till varje bild (Pictures\*.jpg).
             pictureNames = imageNameList();
 
@@ -239,7 +240,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             newDiscountPanel.Children.Add(addDiscount);
-            addDiscount.Click += AddNewDiscount;
+            addDiscount.Click += ClickedAddNewDiscount;
 
 
             //KOLUMN 2 RABATT
@@ -473,7 +474,7 @@ namespace SecondApp
                 HorizontalAlignment = HorizontalAlignment.Left
             };
             showProductListInEdit.Children.Add(saveProduct);
-            saveProduct.Click += ClickedSaveProductList;
+            saveProduct.Click += ClickedSaveProduct;
 
             Button RemoveProductButton = new Button
             {
@@ -496,6 +497,7 @@ namespace SecondApp
             backFromProductEditing.Click += ClickedBackFromProduct;
         }
 
+        //Edit
         private void ClickedEditProduct(object sender, RoutedEventArgs e)
         {
             List<Product> temp = new List<Product>();
@@ -513,13 +515,29 @@ namespace SecondApp
                 newImage.Text = p.Image;
             }
         }
+        private void ClickedEditDiscount(object sender, RoutedEventArgs e)
+        {
+            List<Discount> temp = new List<Discount>();
+            int selectedIndex = discountListBox.SelectedIndex;
+            Discount discount = discountList[selectedIndex];
+            temp.Add(discount);
 
+            //Denna tar bort det gamla ur listan och gör så att du kan utföra din nya ändring
+            discountList.RemoveAt(selectedIndex);
+            foreach (Discount code in temp)
+            {
+                addDiscountCode.Text = code.Code;
+                addDiscountPercentage.Text = code.DiscountPercentage.ToString();
+            }
+        }
+
+        //Add
         private void ClickedAddNewProduct(object sender, RoutedEventArgs e)
         {
             //Kollar om titeln redan finns tillagd i produktlistan.
-            foreach(Product name in productList)
+            foreach (Product name in productList)
             {
-                if(newTitle.Text == name.Title)
+                if (newTitle.Text == name.Title)
                 {
                     MessageBox.Show("Artikeln finns redan tillagd.");
                     return;
@@ -556,7 +574,7 @@ namespace SecondApp
             }
             newPrice.Text = newPrice.Text;
 
-            if(newImage.Text == string.Empty)
+            if (newImage.Text == string.Empty)
             {
                 MessageBox.Show("Bildfältet får inte lämnas tom. Vänligen kryssa i en bild som du vill använda dig utav.");
                 return;
@@ -580,31 +598,7 @@ namespace SecondApp
             newPrice.Text = string.Empty;
             newImage.Text = string.Empty;
         }
-
-        private void ClickedEditDiscount(object sender, RoutedEventArgs e)
-        {
-            List<Discount> temp = new List<Discount>();
-            int selectedIndex = discountListBox.SelectedIndex;
-            Discount discount = discountList[selectedIndex];
-            temp.Add(discount);
-
-            //Denna tar bort det gamla ur listan och gör så att du kan utföra din nya ändring
-            discountList.RemoveAt(selectedIndex);
-            foreach (Discount code in temp)
-            {
-                addDiscountCode.Text = code.Code;
-                addDiscountPercentage.Text = code.DiscountPercentage.ToString();
-            }
-        }
-
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            RadioButton checkBox = (RadioButton)sender;
-            string imageName = (string)checkBox.Tag;
-            newImage.Text = imageName;
-        }
-
-        private void AddNewDiscount(object sender, RoutedEventArgs e)
+        private void ClickedAddNewDiscount(object sender, RoutedEventArgs e)
         {
             //Kollar om rabattkoden redan finns aktiv.
             foreach(Discount code in discountList)
@@ -651,6 +645,7 @@ namespace SecondApp
             }
         }
 
+        //Save
         private void ClickedSaveDiscount(object sender, RoutedEventArgs e)
         {
             var csv = new StringBuilder();
@@ -671,8 +666,7 @@ namespace SecondApp
                     break;
             }
         }
-
-        private void ClickedSaveProductList(object sender, RoutedEventArgs e)
+        private void ClickedSaveProduct(object sender, RoutedEventArgs e)
         {
             var csv = new StringBuilder();
             foreach (Product product in productList)
@@ -695,6 +689,7 @@ namespace SecondApp
             }
         }
 
+        //Remove
         private void ClickedRemoveDiscount(object sender, RoutedEventArgs e)
         {
             int selectedIndex = discountListBox.SelectedIndex;
@@ -702,7 +697,6 @@ namespace SecondApp
 
             discountList.RemoveAt(selectedIndex);
         }
-
         private void ClickedRemoveProduct(object sender, RoutedEventArgs e)
         {
             int selectedIndex = productListBox.SelectedIndex;
@@ -711,12 +705,12 @@ namespace SecondApp
             productList.RemoveAt(selectedIndex);
         }
 
+        //Startscreen options Discount / And back from Startscreen
         private void ClickedBackFromDiscount(object sender, RoutedEventArgs e)
         {
             startGrid.Visibility = Visibility.Visible;
             discountGrid.Visibility = Visibility.Collapsed;
         }
-
         private void ClickedDiscountEditing(object sender, RoutedEventArgs e)
         {
             startGrid.Visibility = Visibility.Collapsed;
@@ -726,12 +720,12 @@ namespace SecondApp
 
         }
 
+        //Startscreen options Products / And back from Startscreen
         private void ClickedBackFromProduct(object sender, RoutedEventArgs e)
         {
             startGrid.Visibility = Visibility.Visible;
             productGrid.Visibility = Visibility.Collapsed;
         }
-
         private void ClickedProductEditing(object sender, RoutedEventArgs e)
         {
             startGrid.Visibility = Visibility.Collapsed;
@@ -740,12 +734,14 @@ namespace SecondApp
             ReadProductList();
         }
 
+        //Exit
         private void ClickedExit(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
 
-        //Calling for ReadProductList when user clicks on ClickedProductEditing method.
+
+        //Calling for Methods when user clicks on ClickedProductEditing or ClickedDiscountEditing.
         private void ReadProductList()
         {
             productList.Clear();
@@ -762,8 +758,6 @@ namespace SecondApp
                 ReadProductListFromCSV();
             }
         }
-
-        //Calling for ReadDiscountList when user clicks on ClickedDiscountEditing method.
         private void ReadDiscountList()
         {
             discountList.Clear();
@@ -782,35 +776,7 @@ namespace SecondApp
             }
         }
 
-        //Read picture names from csv and adding into a temporary list.
-        private List<string> imageNameList()
-        {
-            List<string> temp = new List<string>();
-            string[] imageNames = File.ReadAllLines("pictureNames.csv");
-
-            foreach (string name in imageNames)
-            {
-                temp.Add(name);
-            }
-            return temp;
-        }
-
-        private Image AddImage(string filePath)
-        {
-            ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
-            image = new Image
-            {
-                Source = source,
-                Width = 50,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(5)
-            };
-            // A small rendering tweak to ensure maximum visual appeal.
-            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
-            return image;
-        }
-
+        //Methods for reading product/discount lists.
         private void ReadProductListFromCSV()
         {
             //Separerar alla ',' och lägger in de i diverse titel.
@@ -850,6 +816,44 @@ namespace SecondApp
             {
                 discountListBox.Items.Add(d.Code + " | " + (d.DiscountPercentage * 100) + "%");
             }
+        }
+
+
+        private List<string> imageNameList()
+        //Read picture names from csv and adding into a temporary list.
+        {
+            List<string> temp = new List<string>();
+            string[] imageNames = File.ReadAllLines("pictureNames.csv");
+
+            foreach (string name in imageNames)
+            {
+                temp.Add(name);
+            }
+            return temp;
+        }
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            //We check if the RadioButton is checked. 
+            //We use a Tag so that the checkbox knows which picture belongs to the checkbox.
+            //And prints it out under "Bildnamn".
+            RadioButton checkBox = (RadioButton)sender;
+            string imageName = (string)checkBox.Tag;
+            newImage.Text = imageName;
+        }
+        private Image AddImage(string filePath)
+        {
+            ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
+            image = new Image
+            {
+                Source = source,
+                Width = 50,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(5)
+            };
+            // A small rendering tweak to ensure maximum visual appeal.
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+            return image;
         }
     }
 }
