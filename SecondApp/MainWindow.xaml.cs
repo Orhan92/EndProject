@@ -24,6 +24,7 @@ namespace SecondApp
         private ListBox productListBox, discountListBox;
         private TextBox addDiscountCode, addDiscountPercentage, newTitle, newDescription, newPrice, newImage;
         private string[] discountArray, productArray;
+
         public MainWindow()
         {
             InitializeComponent();

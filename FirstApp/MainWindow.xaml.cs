@@ -84,14 +84,18 @@ namespace FirstApp
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(300) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-            //LISTOR***********************************************************************************
-            productList = new List<Product>(); //lägger in samtliga objekt ur csv filen hit.
-            discountList = new List<Discount>(); //lägger in samtliga rabattkoder här.
+            //LISTOR
+            //lägger in samtliga objekt ur csv 
+            productList = new List<Product>();
+
+            //lägger in samtliga rabattkoder här.
+            discountList = new List<Discount>(); 
+
+            //Lägger in tillagda artiklar från productList hit.
             cartList = new List<Product>();  //Dokumentera om denna delen, att det var svårt att förstå att jag behövde lägga in saker från listProducts in i en ny lista (den här listan) för att kunna manipulera den i chartListBox.
 
 
-
-            //KOLUMN 0**************************************************************************************
+            //KOLUMN 0
             productListLabel = new TextBlock //Detta är titeln som står högst upp "Produktlista"
             {
                 FontSize = 20,
