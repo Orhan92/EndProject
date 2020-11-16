@@ -136,7 +136,7 @@ namespace FirstApp
                 Margin = new Thickness(0, 2, 0, 0)
             };
             addToCart.Children.Add(addItem);
-            addItem.Click += ClickedAddToChart;
+            addItem.Click += ClickedAddToCart;
 
             //När användaren klickar här så ska produktbeskrivning visas i kolumn 1 
             productInfo = new Button
@@ -338,7 +338,7 @@ namespace FirstApp
                 Margin = new Thickness(0, 2, 0, 0)
             };
             cartButtons.Children.Add(saveCart);
-            saveCart.Click += ClickedSaveChart;
+            saveCart.Click += ClickedSaveCart;
 
             //Stackpanel för knappar under varukorgen
             secondCartButtons = new StackPanel { Orientation = Orientation.Horizontal };
@@ -367,11 +367,11 @@ namespace FirstApp
             order.Click += ClickedOrder;
 
             //Läser in sparad varukorg när programmet startas.
-            ReadSavedChart();
+            ReadSavedCart();
         }
 
         //Skapar en metod för inläsning av sparad varukorg (csv-fil).
-        private void ReadSavedChart()
+        private void ReadSavedCart()
         {
             //Denna för att skapa filen "savedChart.csv" i temp mappen. Skapar en tom csv fil med namnet savedChart.csv. 
             File.AppendAllText(@"C:\Windows\Temp\savedChart.csv", string.Empty);
@@ -662,7 +662,7 @@ namespace FirstApp
         }
 
         //SPARA / LÄGG TILL / INFO
-        private void ClickedSaveChart(object sender, RoutedEventArgs e)
+        private void ClickedSaveCart(object sender, RoutedEventArgs e)
         {
             //Sparar varukorgen i Temp mappen när användaren trycker på "Spara"
             var csv = new StringBuilder();
@@ -685,7 +685,7 @@ namespace FirstApp
                     break;
             }
         }
-        private void ClickedAddToChart(object sender, RoutedEventArgs e)
+        private void ClickedAddToCart(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -823,7 +823,7 @@ namespace FirstApp
 
             return unitTestDiscountList;
         }
-        public static List<Product> ReadSavedChartTest()
+        public static List<Product> ReadSavedCartTest()
         {
             //kod som läser om filen
             //lägger till listan
