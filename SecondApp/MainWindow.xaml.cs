@@ -12,18 +12,23 @@ namespace SecondApp
 {
     public partial class MainWindow : Window
     {
-        private Image image;
         private Grid productGrid, discountGrid, grid, startGrid;
+
         private List<Product> productList;
         private List<Discount> discountList;
         private List<string> pictureNames;
-        private RadioButton checkBox;
+
         private StackPanel userChoice, addNewProduct, showProductListInEdit, discountPanel, newDiscountPanel;
         private WrapPanel imageWrapPanel;
+
         private TextBlock label;
+        private Image image;
+
         private ListBox productListBox, discountListBox;
         private TextBox addDiscountCode, addDiscountPercentage, newTitle, newDescription, newPrice, newImage;
         private Button editProductButton, editDiscountButton;
+        private RadioButton checkBox;
+
         private string[] discountArray, productArray;
 
         public MainWindow()
