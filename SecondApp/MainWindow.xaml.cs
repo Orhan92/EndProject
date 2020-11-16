@@ -23,6 +23,7 @@ namespace SecondApp
         private TextBlock label;
         private ListBox productListBox, discountListBox;
         private TextBox addDiscountCode, addDiscountPercentage, newTitle, newDescription, newPrice, newImage;
+        private Button editProductButton, editDiscountButton;
         private string[] discountArray, productArray;
 
         public MainWindow()
@@ -274,7 +275,7 @@ namespace SecondApp
             };
             discountPanel.Children.Add(discountListBox);
 
-            Button editDiscountButton = new Button
+            editDiscountButton = new Button
             {
                 Content = "Ändra",
                 Width = 180,
@@ -462,7 +463,7 @@ namespace SecondApp
             };
             showProductListInEdit.Children.Add(productListBox);
 
-            Button editProductButton = new Button
+            editProductButton = new Button
             {
                 Content = "Ändra",
                 Width = 180,
@@ -508,6 +509,9 @@ namespace SecondApp
         {
             try
             {
+                //Gömmer knappen till dess att användaren tryckt på "Lägg till"
+                editProductButton.Visibility = Visibility.Hidden;
+
                 List<Product> temp = new List<Product>();
                 int selectedIndex = productListBox.SelectedIndex;
                 Product product = productList[selectedIndex];
@@ -532,6 +536,9 @@ namespace SecondApp
         {
             try
             {
+                //Gömmer "Ändra" knappen när användaren tryckt på ändra en produkt.
+                editDiscountButton.Visibility = Visibility.Hidden;
+
                 List<Discount> temp = new List<Discount>();
                 int selectedIndex = discountListBox.SelectedIndex;
                 Discount discount = discountList[selectedIndex];
@@ -554,6 +561,9 @@ namespace SecondApp
         //Add
         private void ClickedAddNewProduct(object sender, RoutedEventArgs e)
         {
+            //Visar "Ändra" knappen igen när användaren utfört en ändring.
+            editProductButton.Visibility = Visibility.Visible;
+
             //Kollar om titeln redan finns tillagd i produktlistan.
             foreach (Product name in productList)
             {
@@ -625,8 +635,11 @@ namespace SecondApp
         }
         private void ClickedAddNewDiscount(object sender, RoutedEventArgs e)
         {
+            //Visar "Ändra" knappen igen efter att användaren utfört en ändring.
+            editDiscountButton.Visibility = Visibility.Visible;
+
             //Kollar om rabattkoden redan finns aktiv.
-            foreach(Discount code in discountList)
+            foreach (Discount code in discountList)
             {
                 if (addDiscountCode.Text.ToUpper() == code.Code)
                 {
