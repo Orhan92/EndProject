@@ -534,6 +534,8 @@ namespace SecondApp
             }
             catch
             {
+                //Vill inte göra knappen Hidden om användaren inte markerat en produkt att ändra.
+                editProductButton.Visibility = Visibility.Visible;
                 MessageBox.Show("Vänligen markera produkt som du vill ändra.");
             }
         }
@@ -544,6 +546,7 @@ namespace SecondApp
                 //Gömmer "Ändra" knappen när användaren tryckt på ändra en produkt.
                 editDiscountButton.Visibility = Visibility.Hidden;
 
+                //Skapar en temporär lista där vi lägger till den ändrade rabattkoden.
                 List<Discount> temp = new List<Discount>();
                 int selectedIndex = discountListBox.SelectedIndex;
                 Discount discount = discountList[selectedIndex];
@@ -551,6 +554,8 @@ namespace SecondApp
 
                 //Denna tar bort det gamla ur listan och gör så att du kan utföra din nya ändring
                 discountList.RemoveAt(selectedIndex);
+
+                //skriver ut objektet av rabattkoden i den temporära listan för användaren.
                 foreach (Discount code in temp)
                 {
                     addDiscountCode.Text = code.Code;
@@ -559,6 +564,8 @@ namespace SecondApp
             }
             catch
             {
+                //Vill inte göra knappen Hidden om användaren inte markerat en rabattkod att ändra.
+                editDiscountButton.Visibility = Visibility.Visible;
                 MessageBox.Show("Vänligen markera rabattkod som du vill ändra.");
             }
         }
