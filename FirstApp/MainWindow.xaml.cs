@@ -39,13 +39,13 @@ namespace FirstApp
     {
         private Image image;
         private Grid grid;
-        private ListBox productListBox, chartListBox, orderedProductListBox;
+        private ListBox productListBox, cartListBox, orderedProductListBox;
         private TextBox discountBox;
-        private TextBlock chart, productDescritpion, productListLabel, productDescription, orderSum, chartSumLabel;
-        private Button addDiscount, order, emptyChart, saveChart, removeItem, addItem, productInfo, backFromOrder;
+        private TextBlock cart, productDescritpion, productListLabel, productDescription, orderSum, chartSumLabel;
+        private Button addDiscount, order, emptyCart, saveCart, removeItem, addItem, productInfo, backFromOrder;
         private List<Product> productList, cartList;
         private List<Discount> discountList;
-        private StackPanel descriptionBox, addToChart, discountSum, discount, chartButtons, secondChartButtons, orderPanel;
+        private StackPanel descriptionBox, addToCart, discountSum, discount, cartButtons, secondCartButtons, orderPanel;
         private decimal totalSum;
         private string[] productArray, discountArray;
         public MainWindow()
@@ -123,10 +123,10 @@ namespace FirstApp
             Grid.SetRow(productListBox, 1);
 
             //Denna StackPanel är skapad för info och lägg till knapparna.
-            addToChart = new StackPanel { Orientation = Orientation.Horizontal }; 
-            grid.Children.Add(addToChart);
-            Grid.SetRow(addToChart, 2);
-            Grid.SetColumn(addToChart, 0);
+            addToCart = new StackPanel { Orientation = Orientation.Horizontal }; 
+            grid.Children.Add(addToCart);
+            Grid.SetRow(addToCart, 2);
+            Grid.SetColumn(addToCart, 0);
 
             //Denna knapp ska lägga till den markerade artikeln i varukorgen
             addItem = new Button 
@@ -135,7 +135,7 @@ namespace FirstApp
                 Width = 100,
                 Margin = new Thickness(0, 2, 0, 0)
             };
-            addToChart.Children.Add(addItem);
+            addToCart.Children.Add(addItem);
             addItem.Click += ClickedAddToChart;
 
             //När användaren klickar här så ska produktbeskrivning visas i kolumn 1 
@@ -145,7 +145,7 @@ namespace FirstApp
                 Width = 100,
                 Margin = new Thickness(0, 2, 0, 0)
             };
-            addToChart.Children.Add(productInfo);
+            addToCart.Children.Add(productInfo);
             productInfo.Click += ClickedInfo;
 
             //läser in produktlistan. Se metod för funktion.
@@ -265,7 +265,7 @@ namespace FirstApp
 
             //KOLUMN 2,************************************************************************
             //Detta är titeln som står högst upp "Varukorgen"
-            chart = new TextBlock 
+            cart = new TextBlock 
             {
                 FontSize = 20,
                 Margin = new Thickness(2),
@@ -273,12 +273,12 @@ namespace FirstApp
                 Width = 200,
                 Text = "Varukorgen"
             };
-            grid.Children.Add(chart);
-            Grid.SetColumn(chart, 2);
-            Grid.SetRow(chart, 0);
+            grid.Children.Add(cart);
+            Grid.SetColumn(cart, 2);
+            Grid.SetRow(cart, 0);
 
             //Listbox som ska visa upp de tillagda artiklarna i varukorgen för användaren.
-            chartListBox = new ListBox
+            cartListBox = new ListBox
             {
                 Background = Brushes.AliceBlue,
                 Margin = new Thickness(0, 2, 0, 0),
@@ -286,9 +286,9 @@ namespace FirstApp
                 Width = 200,
                 Height = 350
             };
-            grid.Children.Add(chartListBox);
-            Grid.SetColumn(chartListBox, 2);
-            Grid.SetRow(chartListBox, 1);
+            grid.Children.Add(cartListBox);
+            Grid.SetColumn(cartListBox, 2);
+            Grid.SetRow(cartListBox, 1);
 
             //stackpanel under varukorgen för att visa totalsumman
             discountSum = new StackPanel { Orientation = Orientation.Horizontal };
@@ -315,10 +315,10 @@ namespace FirstApp
             discountSum.Children.Add(chartSumLabel);
 
             //stackPanel för knappar under varukorgen.
-            chartButtons = new StackPanel { Orientation = Orientation.Horizontal };
-            grid.Children.Add(chartButtons);
-            Grid.SetRow(chartButtons, 4);
-            Grid.SetColumn(chartButtons, 2);
+            cartButtons = new StackPanel { Orientation = Orientation.Horizontal };
+            grid.Children.Add(cartButtons);
+            Grid.SetRow(cartButtons, 4);
+            Grid.SetColumn(cartButtons, 2);
 
             //Ta bort enskild vald produkt från varukorgen.
             removeItem = new Button 
@@ -327,34 +327,34 @@ namespace FirstApp
                 Width = 100,
                 Margin = new Thickness(0, 2, 0, 0)
             };
-            chartButtons.Children.Add(removeItem);
+            cartButtons.Children.Add(removeItem);
             removeItem.Click += ClickedRemove;
 
             //Spara varukorgen till en csv fil i temp mappen.
-            saveChart = new Button 
+            saveCart = new Button 
             {
                 Content = "Spara",
                 Width = 100,
                 Margin = new Thickness(0, 2, 0, 0)
             };
-            chartButtons.Children.Add(saveChart);
-            saveChart.Click += ClickedSaveChart;
+            cartButtons.Children.Add(saveCart);
+            saveCart.Click += ClickedSaveChart;
 
             //Stackpanel för knappar under varukorgen
-            secondChartButtons = new StackPanel { Orientation = Orientation.Horizontal };
-            grid.Children.Add(secondChartButtons);
-            Grid.SetRow(secondChartButtons, 5);
-            Grid.SetColumn(secondChartButtons, 2);
+            secondCartButtons = new StackPanel { Orientation = Orientation.Horizontal };
+            grid.Children.Add(secondCartButtons);
+            Grid.SetRow(secondCartButtons, 5);
+            Grid.SetColumn(secondCartButtons, 2);
 
             //Tömmer hela varukorgen, och nollställer programmet.
-            emptyChart = new Button 
+            emptyCart = new Button 
             {
                 Content = "Töm",
                 Width = 100,
                 Margin = new Thickness(0, 2, 0, 0)
             };
-            secondChartButtons.Children.Add(emptyChart);
-            emptyChart.Click += ClickedEmptyAll;
+            secondCartButtons.Children.Add(emptyCart);
+            emptyCart.Click += ClickedEmptyAll;
 
             //För att beställa tillagda artiklar
             order = new Button 
@@ -363,7 +363,7 @@ namespace FirstApp
                 Width = 100,
                 Margin = new Thickness(0, 2, 0, 0)
             };
-            secondChartButtons.Children.Add(order);
+            secondCartButtons.Children.Add(order);
             order.Click += ClickedOrder;
 
             //Läser in sparad varukorg när programmet startas.
@@ -391,7 +391,7 @@ namespace FirstApp
                 cartList.Add(savedProduct);
 
                 //Lägger in de sparade produkterna i varukorgen
-                chartListBox.Items.Add(savedProduct.Title + " | " + savedProduct.Price.ToString("C"));
+                cartListBox.Items.Add(savedProduct.Title + " | " + savedProduct.Price.ToString("C"));
 
                 //Uppdaterar totalSum: 'Summa:' i raden under varukorgen.
                 totalSum += savedProduct.Price;
@@ -527,7 +527,7 @@ namespace FirstApp
             //Kolumn 0: Gör hela Visible,
             productListLabel.Visibility = Visibility.Visible;
             productListBox.Visibility = Visibility.Visible;
-            addToChart.Visibility = Visibility.Visible;
+            addToCart.Visibility = Visibility.Visible;
 
             //Kolumn 1: Visar "ursprungliga" kolumnen (den som visas vid programmets start)
             descriptionBox.Visibility = Visibility.Visible;
@@ -541,16 +541,16 @@ namespace FirstApp
             backFromOrder.Visibility = Visibility.Collapsed;
 
             //Kolumn 2: Gör hela kolumnen Visible igen.
-            chart.Visibility = Visibility.Visible;
-            chartListBox.Visibility = Visibility.Visible;
+            cart.Visibility = Visibility.Visible;
+            cartListBox.Visibility = Visibility.Visible;
             discountSum.Visibility = Visibility.Visible;
-            chartButtons.Visibility = Visibility.Visible;
-            secondChartButtons.Visibility = Visibility.Visible;
+            cartButtons.Visibility = Visibility.Visible;
+            secondCartButtons.Visibility = Visibility.Visible;
 
             //Återställer namnen på rubrikerna till ursprungstitel.
             productListLabel.Text = "Produktlista";
             productDescritpion.Text = "Produktbeskrivning";
-            chart.Text = "Varukorgen";
+            cart.Text = "Varukorgen";
 
             //Nollställer rabattfälten till sitt urpsrungstillstånd.
             discountBox.Foreground = Brushes.Gray;
@@ -558,7 +558,7 @@ namespace FirstApp
             discountBox.Text = "Rabattkod";
 
             //Tömmer/Rensar väsentliga listor och ListBox (som visas för användaren).
-            chartListBox.Items.Clear();
+            cartListBox.Items.Clear();
             orderedProductListBox.Items.Clear();
             cartList.Clear();
 
@@ -570,7 +570,7 @@ namespace FirstApp
         {
             //Kolumn 0: Vi vill Collapsa/Dölja denna när användaren trycker på "Beställ"
             productListBox.Visibility = Visibility.Collapsed;
-            addToChart.Visibility = Visibility.Collapsed;
+            addToCart.Visibility = Visibility.Collapsed;
 
             //Kolumn 1: Vi gömmer det som visas i denna kolumnen vid programmets start och uppdaterar med ny information.
             descriptionBox.Visibility = Visibility.Collapsed;
@@ -579,21 +579,21 @@ namespace FirstApp
             //Kolumn 1: Uppdaterad information när användaren klickat på "Beställ"
             orderPanel.Visibility = Visibility.Visible;
             discount.Visibility = Visibility.Visible;
-            saveChart.Visibility = Visibility.Visible; 
+            saveCart.Visibility = Visibility.Visible; 
             discountBox.Visibility = Visibility.Visible; 
             addDiscount.Visibility = Visibility.Visible; 
             backFromOrder.Visibility = Visibility.Visible;
 
             //Kolumn 2: Collapsar/Döljer även denna vid beställning.
-            chartListBox.Visibility = Visibility.Collapsed;
+            cartListBox.Visibility = Visibility.Collapsed;
             discountSum.Visibility = Visibility.Collapsed;
-            chartButtons.Visibility = Visibility.Collapsed;
-            secondChartButtons.Visibility = Visibility.Collapsed;
+            cartButtons.Visibility = Visibility.Collapsed;
+            secondCartButtons.Visibility = Visibility.Collapsed;
 
             //Byter ut texten i samtliga kolumner för rad 0.
             productListLabel.Text = string.Empty;
             productDescritpion.Text = "Tack för din beställning";
-            chart.Text = string.Empty;
+            cart.Text = string.Empty;
 
             //Sätter en specifik höjd på beställningslistan.
             orderedProductListBox.Height = 350;
@@ -621,7 +621,7 @@ namespace FirstApp
                     productDescription.Visibility = Visibility.Hidden;
 
                     //Rensar varukorgen.
-                    chartListBox.Items.Clear();
+                    cartListBox.Items.Clear();
                     cartList.Clear();
 
                     //Nollställer totalsumman.
@@ -638,8 +638,8 @@ namespace FirstApp
             try
             {
                 //Tar bort den markerade raden i varukorgen. SelectedIndex; för att veta vilken produkt.
-                int foodIndex = chartListBox.SelectedIndex;
-                chartListBox.Items.RemoveAt(foodIndex);
+                int foodIndex = cartListBox.SelectedIndex;
+                cartListBox.Items.RemoveAt(foodIndex);
 
                 //Tar bort objektet i varukorgen och priset för objektet i totalSum.
                 Product product = cartList[foodIndex];
@@ -695,7 +695,7 @@ namespace FirstApp
 
                 //Rensar ListBoxen som visar upp varukorgen för användaren.
                 //Detta för att undvika dubletter av listan som visas för användaren.
-                chartListBox.Items.Clear();
+                cartListBox.Items.Clear();
                 int selectedIndex = productListBox.SelectedIndex;
 
                 //Lägger till den markerade produkten från productList in till cartList.
@@ -704,7 +704,7 @@ namespace FirstApp
 
                 foreach (Product p in cartList)
                 {
-                    chartListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
+                    cartListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
                 }
                 //För att visa priset av totalsumman i varukorgen!
                 totalSum += product.Price;
@@ -720,7 +720,7 @@ namespace FirstApp
                         //Loopen fungerar som en slags "felhantring". Ifall användaren inte markerat en produkt som ska läggas till så kommer det upp en informationsruta och sedan visas de redan tillagda produkterna igen. Utan loopen blir varukorgen tom.
                         foreach (Product p in cartList)
                         {
-                            chartListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
+                            cartListBox.Items.Add(p.Title + " | " + p.Price.ToString("C"));
                         }
                         break;
                 }
