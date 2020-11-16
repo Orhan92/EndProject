@@ -695,6 +695,11 @@ namespace SecondApp
             {
                 discountListBox.Items.Add(d.Code + " | " + (d.DiscountPercentage * 100) + "%");
             }
+
+            //För att nollställa rutorna som användaren matar in info i efter att rabatt lagts till.
+            addDiscountCode.Text = string.Empty;
+            addDiscountPercentage.Text = string.Empty;
+               
         }
 
         //Save
