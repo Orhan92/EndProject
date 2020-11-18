@@ -148,9 +148,6 @@ namespace FirstApp
             addToCart.Children.Add(productInfo);
             productInfo.Click += ClickedInfo;
 
-            //läser in produktlistan. Se metod för funktion.
-            ReadProductList();
-
 
 
             //KOLUMN 1 ************************************************************************
@@ -366,6 +363,8 @@ namespace FirstApp
             secondCartButtons.Children.Add(order);
             order.Click += ClickedOrder;
 
+            //läser in produktlistan. Se metod för funktion.
+            ReadProductList();
             //Läser in sparad varukorg när programmet startas.
             ReadSavedCart();
         }
@@ -759,6 +758,7 @@ namespace FirstApp
             ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
             image = new Image
             {
+                //Håller den hidden till dess att användaren klickar på "Visa Info".
                 Visibility = Visibility.Hidden,
                 Source = source,
                 Width = 100,
