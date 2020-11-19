@@ -573,9 +573,6 @@ namespace SecondApp
         //Add
         private void ClickedAddNewProduct(object sender, RoutedEventArgs e)
         {
-            //Visar "Ändra" knappen igen när användaren utfört en ändring.
-            editProductButton.Visibility = Visibility.Visible;
-
             //Kollar om titeln redan finns tillagd i produktlistan.
             foreach (Product name in productList)
             {
@@ -644,12 +641,12 @@ namespace SecondApp
             newDescription.Text = string.Empty;
             newPrice.Text = string.Empty;
             newImage.Text = string.Empty;
+
+            //Visar "Ändra" knappen igen när användaren utfört en ändring.
+            editProductButton.Visibility = Visibility.Visible;
         }
         private void ClickedAddNewDiscount(object sender, RoutedEventArgs e)
         {
-            //Visar "Ändra" knappen igen efter att användaren utfört en ändring.
-            editDiscountButton.Visibility = Visibility.Visible;
-
             //Kollar om rabattkoden redan finns aktiv.
             foreach (Discount code in discountList)
             {
@@ -667,6 +664,13 @@ namespace SecondApp
             }
             //Om användarens rabattkod är giltigt inmatad så gör vi om de till stora bokstäver.
             addDiscountCode.Text = addDiscountCode.Text.ToUpper();
+
+            //Kollar om rabattkoden innehåller svenska tecken.
+            if (addDiscountCode.Text.Contains("Å") || addDiscountCode.Text.Contains("Ä") || addDiscountCode.Text.Contains("Ö"))
+            {
+                MessageBox.Show("Svenska tecken är inte tillåtna, använd endast engelska tecken.");
+                return;
+            }
 
             //Variabler som ska läggas till i klassens konstruktor.
             decimal parsedValue;
@@ -699,7 +703,9 @@ namespace SecondApp
             //För att nollställa rutorna som användaren matar in info i efter att rabatt lagts till.
             addDiscountCode.Text = string.Empty;
             addDiscountPercentage.Text = string.Empty;
-               
+
+            //Visar "Ändra" knappen igen efter att användaren utfört en ändring.
+            editDiscountButton.Visibility = Visibility.Visible;
         }
 
         //Save
