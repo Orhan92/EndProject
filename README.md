@@ -23,4 +23,4 @@ Nästa gång programmet startas så visas den sparade varukorgen kvar för anvä
 Programmet kollar om det finns en sparad varukorg från användaren i Temp mappen. Om så är fallet så läser programmet in den sparade varukorgen. 
 Programmet kollar även om administratör gjort någon ändring i produktutbudet / rabattkoder och läser då in dessa ändringar som sedan visas för användaren.
 
-Se ScreenShots i repository för programmet. https://github.com/Orhan92/EndProject/tree/master/SecondApp
+Se ScreenShots i repository för programmet. https://github.com/Orhan92/EndProject/tree/master/Screenshots
