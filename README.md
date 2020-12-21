@@ -6,7 +6,7 @@ FirstApp: Användare
 
 SecondApp: Administratör
 
-Vi ska skapa ett butiksprogram där användaren har möjlighet att beställa produkter från en bestämd uppsättning genom ett GUI (FirstApp).
+Vi ska skapa ett butiksprogram där användaren har möjlighet att beställa produkter från en bestämd uppsättning av produkter ur en CSV-fil. genom ett GUI (FirstApp).
 Användaren har möjlighet att spara sin varukorg med valda produkter, till en CSV-fil som sparas i Windows\Temp mappen, och kan därefter stänga ner programmet. 
 Nästa gång programmet startas så programmet kollar om det finns en sparad varukorg från användaren i Temp mappen. Om så är fallet så läser programmet in den sparade varukorgen.
 
