@@ -1,6 +1,6 @@
 # Beskriving
 
-Detta program är ett projektarbete för att slutföra kursen: Programmeringsteknik C#.
+Detta program är ett projektarbete till kursen: Programmeringsteknik C#.
 
 FirstApp: Användare
 SecondApp: Administratör
