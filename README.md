@@ -6,8 +6,8 @@ FirstApp: Användare
 
 SecondApp: Administratör
 
-Vi ska skapa ett butiksprogram där användaren har möjlighet att beställa produkter från en bestämd uppsättning genom ett GUI.
-Administratörer ska kunna göra ändringar i produktutbudet genom ett annat GUI. Administratörer kan modifiera produktutbudet och 
+Vi ska skapa ett butiksprogram där användaren har möjlighet att beställa produkter från en bestämd uppsättning genom ett GUI (FirstApp).
+Administratörer ska kunna göra ändringar i produktutbudet genom ett annat GUI (SecondApp). Administratörer kan modifiera produktutbudet och 
 koppla på bild till en produkt. I detta program kan administratören endast välja bilder från en uppsättning av bilder.
 
 En produkt ska innehålla Namn, Pris, Beskrivning och bild.
